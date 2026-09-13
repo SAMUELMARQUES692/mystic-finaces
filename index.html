@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tora Finance — Controle financeiro com força de tigre</title>
+<meta name="description" content="Contas, transações, categorias, orçamentos, metas e relatórios em um só lugar. Tora Finance é o seu sistema de controle financeiro pessoal." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐯</text></svg>">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+<header class="topbar" id="topbar">
+  <a href="index.html" class="topbar__mark">
+    <span class="topbar__mark-glyph">虎</span>
+    Tora Finance
+  </a>
+  <nav class="topbar__links">
+    <a href="#recursos">Recursos</a>
+    <a href="#como-funciona">Como funciona</a>
+    <a href="#painel">Painel</a>
+    <a href="#seguranca">Segurança</a>
+  </nav>
+  <div class="topbar__actions">
+    <a href="pages/login.html" class="topbar__login">Entrar</a>
+    <a href="pages/register.html" class="btn btn--primary btn--sm">
+      <span class="btn__label">Criar conta</span>
+      <span class="btn__icon">→</span>
+    </a>
+  </div>
+</header>
+
+<div class="cine-pin" id="heroPin">
+  <section class="hero" id="hero">
+    <div class="hero__media">
+      <video id="heroVideo" class="hero__video" muted playsinline preload="auto">
+        <source src="video/hero-dragon.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero__scrim"></div>
+    <div class="hero__fade"></div>
+    <div class="hero__texture"></div>
+
+    <div class="hero__wrap">
+      <div class="hero__content">
+        <span class="kicker kicker--on-dark reveal reveal--in is-visible">財闘の虎 &middot; Disciplina financeira</span>
+        <h1 class="hero__title reveal is-visible" style="animation-delay:.05s">
+          Domine suas finanças<br> com o instinto de <em>um tigre</em>.
+        </h1>
+        <p class="hero__lede reveal is-visible" style="animation-delay:.15s">
+          Tora Finance reúne sua conta bancária, transferências e extrato em um único painel — para você caçar cada centavo com a precisão e o foco de um tigre.
+        </p>
+        <div class="hero__cta reveal is-visible" style="animation-delay:.25s">
+          <a href="pages/register.html" class="btn btn--primary">
+            <span class="btn__label">Começar agora</span>
+            <span class="btn__icon">→</span>
+          </a>
+          <a href="#painel" class="btn btn--ghost">
+            <span class="btn__label">Ver o painel</span>
+          </a>
+        </div>
+        <div class="hero__stats reveal is-visible" style="animation-delay:.35s">
+          <div class="hero__stat"><b id="statUsers">12k+</b><span>Usuários ativos</span></div>
+          <div class="hero__stat"><b id="statTx">2.4M</b><span>Transações rastreadas</span></div>
+          <div class="hero__stat"><b>99.9%</b><span>Disponibilidade</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__seal reveal reveal--scale is-visible" style="animation-delay:.5s">
+      <div class="hero__seal-ring"></div>
+      百獣の王
+    </div>
+
+    <div class="scroll-cue">
+      <div class="scroll-cue__dot-track"><div class="scroll-cue__dot"></div></div>
+      Rolar
+    </div>
+  </section>
+</div>
+
+<div class="cine-pin cine-pin--tiger" id="tigerPin">
+  <section class="tiger-band" id="tigerBand">
+    <div class="tiger-band__media">
+      <video id="tigerVideo" class="tiger-band__video" muted playsinline preload="auto">
+        <source src="video/fold-tiger.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="tiger-band__fade"></div>
+  </section>
+
+  <div class="tiger-band__scroll" id="recursos">
+    <div class="wrap">
+      <div class="tiger-band__intro reveal">
+        <span class="kicker kicker--on-dark">変化 &middot; Da fúria à precisão</span>
+        <h2 class="tiger-band__title">O vôo do dragão pousa no instinto do tigre.</h2>
+      </div>
+
+      <div class="section__head reveal" style="margin-top:min(30vh,220px)">
+        <span class="kicker kicker--on-dark">道具箱 &middot; Ferramentas</span>
+        <h2 class="section__title" style="color:var(--text-on-dark)">Tudo que você precisa para caçar seus objetivos financeiros</h2>
+        <p class="section__desc text-soft-dark">Do lançamento do dia a dia às metas de longo prazo — cada funcionalidade do Tora Finance foi desenhada para reduzir fricção e te dar clareza total sobre seu dinheiro.</p>
+      </div>
+
+      <div class="feature-grid feature-grid--on-dark">
+        <div class="feature-card reveal">
+          <div class="feature-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>
+          </div>
+          <h3 class="feature-card__title">Conta bancária</h3>
+          <p class="feature-card__desc">Agência, número e saldo em um único lugar, criados em segundos assim que você entra pela primeira vez.</p>
+        </div>
+        <div class="feature-card reveal" style="animation-delay:.05s">
+          <div class="feature-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+          </div>
+          <h3 class="feature-card__title">Transferências</h3>
+          <p class="feature-card__desc">Envie valores para outra conta pelo ID de destino, com validação de saldo antes de confirmar.</p>
+        </div>
+        <div class="feature-card reveal" style="animation-delay:.1s">
+          <div class="feature-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 16V9"/><path d="M13 16v-4"/><path d="M17 16v-7"/></svg>
+          </div>
+          <h3 class="feature-card__title">Extrato completo</h3>
+          <p class="feature-card__desc">Veja o histórico de transações da sua conta, com status e descrição de cada movimentação.</p>
+        </div>
+        <div class="feature-card reveal" style="animation-delay:.15s">
+          <div class="feature-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/></svg>
+          </div>
+          <h3 class="feature-card__title">Perfil do usuário</h3>
+          <p class="feature-card__desc">Consulte seus dados de cadastro — nome, e-mail e data de criação da conta — a qualquer momento.</p>
+        </div>
+        <div class="feature-card reveal" style="animation-delay:.2s">
+          <div class="feature-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          </div>
+          <h3 class="feature-card__title">Autenticação JWT</h3>
+          <p class="feature-card__desc">Login protegido por token com escopo de acesso, expirando automaticamente após 1 hora.</p>
+        </div>
+        <div class="feature-card reveal" style="animation-delay:.25s">
+          <div class="feature-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20l6-8 4 4 6-9"/><path d="M20 7v6"/></svg>
+          </div>
+          <h3 class="feature-card__title">Painel administrativo</h3>
+          <p class="feature-card__desc">Administradores podem criar, atualizar e remover usuários da plataforma.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fold-bridge" aria-hidden="true">
+  <div class="fold-bridge__mist"></div>
+</div>
+
+<section class="section section--paper-alt" id="como-funciona">
+  <div class="wrap">
+    <div class="steps">
+      <div class="steps__art reveal reveal--scale">
+        <img src="assets/img/Tiger_in_ink_wash_painting_2K_20260912202425.jpeg" alt="Pintura sumi-e de um tigre em uma árvore, representando calma e estratégia financeira" loading="lazy">
+      </div>
+      <div>
+        <span class="kicker">道 &middot; O caminho</span>
+        <h2 class="section__title" style="margin-top:14px">Três passos até a clareza financeira</h2>
+        <div class="steps__list" style="margin-top:32px">
+          <div class="step reveal">
+            <div class="step__num">01</div>
+            <div>
+              <p class="step__title">Crie sua conta de acesso</p>
+              <p class="step__desc">Cadastre-se com nome, e-mail e senha para receber seu token de acesso.</p>
+            </div>
+          </div>
+          <div class="step reveal" style="animation-delay:.08s">
+            <div class="step__num">02</div>
+            <div>
+              <p class="step__title">Abra sua conta bancária</p>
+              <p class="step__desc">Defina agência, número e saldo inicial — sua conta financeira fica pronta em segundos.</p>
+            </div>
+          </div>
+          <div class="step reveal" style="animation-delay:.16s">
+            <div class="step__num">03</div>
+            <div>
+              <p class="step__title">Transfira e acompanhe o extrato</p>
+              <p class="step__desc">Movimente valores entre contas e veja cada transação registrada no seu histórico.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" id="painel">
+  <div class="wrap">
+    <div class="section__head section__head--center reveal">
+      <span class="kicker kicker--on-dark">観察 &middot; Visão geral</span>
+      <h2 class="section__title" style="color:var(--text-on-dark)">Um painel que enxerga sua conta inteira</h2>
+      <p class="section__desc text-soft-dark">Saldo, dados bancários e histórico de transações — sem precisar abrir seis abas diferentes.</p>
+    </div>
+
+    <div class="preview reveal reveal--scale">
+      <div class="preview__inner">
+        <div class="preview__bar"><span></span><span></span><span></span></div>
+        <div class="preview__grid">
+          <div class="preview__panel">
+            <h4>Últimas transações</h4>
+            <div class="preview__chart">
+              <div class="preview__bar-el" style="height:38%"></div>
+              <div class="preview__bar-el" style="height:62%"></div>
+              <div class="preview__bar-el" style="height:48%"></div>
+              <div class="preview__bar-el" style="height:80%"></div>
+              <div class="preview__bar-el" style="height:66%"></div>
+              <div class="preview__bar-el" style="height:94%"></div>
+            </div>
+          </div>
+          <div class="preview__panel">
+            <h4>Sua conta</h4>
+            <p class="preview__balance">R$ 48.230,12</p>
+            <div class="preview__stat-row"><span>Agência</span><b>0001</b></div>
+            <div class="preview__stat-row"><span>Número da conta</span><b>00219876-5</b></div>
+            <div class="preview__stat-row"><span>Última transferência</span><b>TRANSFER</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" id="seguranca" style="padding-top:0">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <span class="kicker kicker--on-dark">守り &middot; Proteção</span>
+      <h2 class="section__title" style="color:var(--text-on-dark)">Seus dados, guardados como um tesouro</h2>
+      <p class="section__desc text-soft-dark">Autenticação segura e boas práticas de proteção de dados em cada camada da aplicação.</p>
+    </div>
+    <div class="security-grid">
+      <div class="security-item reveal">
+        <div class="security-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+        <p class="security-item__title">Autenticação segura</p>
+        <p class="security-item__desc">Login protegido por token JWT, exigido em toda rota autenticada da API.</p>
+      </div>
+      <div class="security-item reveal" style="animation-delay:.05s">
+        <div class="security-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg></div>
+        <p class="security-item__title">Dados isolados por usuário</p>
+        <p class="security-item__desc">Cada conta enxerga apenas as suas próprias informações financeiras.</p>
+      </div>
+      <div class="security-item reveal" style="animation-delay:.1s">
+        <div class="security-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0z"/><path d="M12 8v4l3 2"/></svg></div>
+        <p class="security-item__title">Sessões com expiração</p>
+        <p class="security-item__desc">Tokens expiram automaticamente, reduzindo riscos de acesso indevido.</p>
+      </div>
+      <div class="security-item reveal" style="animation-delay:.15s">
+        <div class="security-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <p class="security-item__title">Validações em cada etapa</p>
+        <p class="security-item__desc">Formulários validados de ponta a ponta para evitar dados inconsistentes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--paper">
+  <div class="wrap">
+    <div class="cta-banner reveal reveal--scale">
+      <div class="cta-banner__art"></div>
+      <div class="cta-banner__content">
+        <span class="kicker kicker--on-dark">今すぐ &middot; Agora é a hora</span>
+        <h2>Pronto para caçar seus objetivos financeiros?</h2>
+        <p>Crie sua conta gratuita, abra sua conta bancária e comece a transferir e acompanhar seu extrato em minutos.</p>
+        <div class="cta-banner__actions">
+          <a href="pages/register.html" class="btn btn--primary">
+            <span class="btn__label">Criar conta grátis</span>
+            <span class="btn__icon">→</span>
+          </a>
+          <a href="pages/login.html" class="btn btn--ghost">
+            <span class="btn__label">Já tenho conta</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__top">
+      <div>
+        <div class="site-footer__brand"><span class="topbar__mark-glyph" style="width:28px;height:28px;font-size:14px;">虎</span>Tora Finance</div>
+        <p class="site-footer__tag">Controle financeiro pessoal com a disciplina e o foco de um tigre.</p>
+      </div>
+      <div class="site-footer__col">
+        <h5>Produto</h5>
+        <a href="#recursos">Recursos</a>
+        <a href="#painel">Painel</a>
+        <a href="#seguranca">Segurança</a>
+      </div>
+      <div class="site-footer__col">
+        <h5>Conta</h5>
+        <a href="pages/login.html">Entrar</a>
+        <a href="pages/register.html">Criar conta</a>
+        <a href="pages/app.html">Ir para o app</a>
+      </div>
+      <div class="site-footer__col">
+        <h5>Projeto</h5>
+        <a href="https://github.com/SAMUELMARQUES692/FinanceSystem" target="_blank" rel="noopener">Repositório backend</a>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© <span id="year"></span> Tora Finance. Todos os direitos reservados.</span>
+      <span>Feito com foco, disciplina e um pouco de força de tigre.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/reveal.js"></script>
+<script src="js/hero-scroll.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

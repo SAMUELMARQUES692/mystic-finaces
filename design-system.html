@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hiroshi Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f8fc;
+    --surface: #ffffff;
+    --surface-2: #ece7f3;
+    --ink: #4e405f;
+    --ink-soft: #463c52;
+    --ink-muted: rgba(70, 60, 82, 0.62);
+    --ink-faint: rgba(70, 60, 82, 0.4);
+    --accent: #ffab85;
+    --accent-ink: #463c52;
+    --sun-end: #eecf78;
+    --line: rgba(78, 64, 95, 0.14);
+    --line-strong: rgba(78, 64, 95, 0.28);
+    --code-bg: #ece7f3;
+    --shadow-color: 260 15% 30%;
+
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+    /* Fixed, non-theme-reactive tokens for the actual Hiroshi palette being
+       documented. These must NEVER change under dark mode — a swatch or a
+       component preview shows the real product's real colors regardless of
+       the reader's OS theme. Only the --bg/--surface/--ink/etc. tokens
+       above (this doc page's own shell) react to the viewer's theme. */
+    --src-bg: #f6f8fc;
+    --src-surface: #ffffff;
+    --src-ink: #4e405f;
+    --src-ink-soft: #463c52;
+    --src-ink-soft-60: rgba(70, 60, 82, 0.6);
+    --src-ink-soft-80: rgba(70, 60, 82, 0.8);
+    --src-peach: #ffab85;
+    --src-sun-end: #eecf78;
+    --src-line: #d6d6d6;
+    --src-border: rgba(78, 64, 95, 0.14);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c1622;
+      --surface: #2a2233;
+      --surface-2: #35293f;
+      --ink: #f2ecf9;
+      --ink-soft: #dcc9ec;
+      --ink-muted: rgba(242, 236, 249, 0.62);
+      --ink-faint: rgba(242, 236, 249, 0.38);
+      --accent: #ffab85;
+      --accent-ink: #2a2233;
+      --sun-end: #eecf78;
+      --line: rgba(242, 236, 249, 0.14);
+      --line-strong: rgba(242, 236, 249, 0.26);
+      --code-bg: #241d2c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c1622;
+    --surface: #2a2233;
+    --surface-2: #35293f;
+    --ink: #f2ecf9;
+    --ink-soft: #dcc9ec;
+    --ink-muted: rgba(242, 236, 249, 0.62);
+    --ink-faint: rgba(242, 236, 249, 0.38);
+    --accent: #ffab85;
+    --accent-ink: #2a2233;
+    --sun-end: #eecf78;
+    --line: rgba(242, 236, 249, 0.14);
+    --line-strong: rgba(242, 236, 249, 0.26);
+    --code-bg: #241d2c;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 28px 120px;
+  }
+
+  code, .mono { font-family: var(--font-mono); }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 28px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+  }
+  .topbar__mark {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .topbar__dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--accent), var(--sun-end));
+    flex-shrink: 0;
+  }
+  .topbar__links {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+  .topbar__links a {
+    white-space: nowrap;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .topbar__links a:hover { color: var(--ink); background: var(--surface-2); }
+
+  /* ---------- hero / intro ---------- */
+  .intro {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
+  }
+  .intro__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    margin: 0 0 18px;
+  }
+  .intro__kicker .topbar__dot { width: 7px; height: 7px; }
+  .intro h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 18px;
+    text-wrap: balance;
+    max-width: 14ch;
+  }
+  .intro p.lede {
+    max-width: 60ch;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink-muted);
+    margin: 0 0 32px;
+  }
+  .intro__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 36px;
+  }
+  .stat { min-width: 100px; }
+  .stat b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .stat span {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+  }
+
+  /* ---------- sections ---------- */
+  section.block { margin-bottom: 72px; scroll-margin-top: 76px; }
+  .block__head { margin-bottom: 28px; }
+  .block__eyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .block__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.015em;
+    margin: 0 0 8px;
+  }
+  .block__desc {
+    max-width: 62ch;
+    color: var(--ink-muted);
+    font-size: 14.5px;
+    margin: 0;
+  }
+
+  .note {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: var(--surface-2);
+    border-radius: 12px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .note b { color: var(--ink); }
+
+  /* ---------- color ---------- */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .swatch {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .swatch__fill { height: 84px; }
+  .swatch__body { padding: 12px 14px 14px; }
+  .swatch__name { font-weight: 600; font-size: 13.5px; margin: 0 0 2px; }
+  .swatch__role { font-size: 12px; color: var(--ink-muted); margin: 0 0 10px; line-height: 1.4; }
+  .swatch__values { display: flex; flex-direction: column; gap: 2px; }
+  .swatch__values code { font-size: 11.5px; color: var(--ink-soft); }
+
+  .alpha-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .alpha-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 10px;
+    background: var(--surface);
+  }
+  .alpha-chip__swatch {
+    width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+    background-image:
+      linear-gradient(45deg, var(--line) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--line) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--line) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--line) 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+  }
+  .alpha-chip__fill { width: 100%; height: 100%; border-radius: 8px; }
+  .alpha-chip__label { font-size: 12px; }
+  .alpha-chip__label code { display: block; font-size: 10.5px; color: var(--ink-muted); }
+
+  /* ---------- typography ---------- */
+  .type-pairing {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .type-card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    background: var(--surface);
+  }
+  .type-card__role {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-muted); margin-bottom: 10px;
+  }
+  .type-card__sample {
+    font-size: 34px;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .type-card--display .type-card__sample { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+  .type-card--sans .type-card__sample { font-family: var(--font-sans); font-weight: 500; }
+  .type-card--mono .type-card__sample { font-family: var(--font-mono); font-size: 28px; }
+  .type-card__meta { font-size: 12px; color: var(--ink-muted); }
+  .type-card__meta code { color: var(--ink-soft); }
+
+  /* Fixed "paper": type specimens show the real Hiroshi ink-on-mist
+     combination, so they need their own light ground independent of this
+     doc page's reactive theme — otherwise dark mode renders dark ink text
+     on a dark shell background (unreadable). */
+  .paper {
+    background: var(--src-bg);
+    border: 1px solid var(--src-border);
+    border-radius: 14px;
+    padding: 4px 20px;
+  }
+  .scale-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    padding: 16px 0;
+    border-top: 1px solid var(--src-border);
+  }
+  .scale-row:first-child { border-top: none; }
+  .scale-row__sample {
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--src-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .scale-row__meta {
+    margin-left: auto;
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11.5px;
+    color: var(--src-ink-soft-60);
+    display: flex;
+    gap: 14px;
+  }
+  .scale-row__meta b { color: var(--src-ink-soft); font-weight: 500; }
+
+  .tracking-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .tracking-demo__card {
+    border: 1px solid var(--src-border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    background: var(--src-bg);
+  }
+  .tracking-demo__label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--src-peach); margin-bottom: 8px; font-weight: 500;
+  }
+  .tracking-demo__sample {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 22px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: var(--src-ink);
+  }
+  .tracking-demo__value { font-size: 12px; color: var(--src-ink-soft-60); }
+
+  /* ---------- spacing / radius / shadow / blur ---------- */
+  .scale-strip { display: flex; flex-direction: column; gap: 14px; }
+  .strip-row { display: flex; align-items: center; gap: 16px; }
+  .strip-row__label { width: 92px; flex-shrink: 0; font-size: 12.5px; color: var(--ink-muted); }
+  .strip-row__label b { color: var(--ink); font-family: var(--font-mono); font-weight: 500; }
+  .strip-row__bar { height: 20px; background: var(--accent); border-radius: 4px; }
+  .strip-row__px { font-size: 11.5px; color: var(--ink-faint); margin-left: 10px; white-space: nowrap; }
+
+  .sample-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+  }
+  .sample-tile { text-align: center; }
+  .sample-tile__shape {
+    width: 100%;
+    aspect-ratio: 1.3;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    margin-bottom: 10px;
+  }
+  .sample-tile__label { font-size: 12px; color: var(--ink-muted); }
+  .sample-tile__label b { display: block; color: var(--ink); font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; }
+
+  .blur-row { display: flex; gap: 40px; flex-wrap: wrap; }
+  .blur-tile { text-align: center; }
+  .blur-tile__blob {
+    width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 14px;
+    background: radial-gradient(circle at 35% 30%, var(--accent), var(--sun-end) 70%, transparent 100%);
+  }
+  .blur-tile__label { font-size: 12px; color: var(--ink-muted); }
+  .blur-tile__label b { display: block; color: var(--ink); font-family: var(--font-mono); font-weight: 500; font-size: 12.5px; }
+
+  /* ---------- motion ---------- */
+  .motion-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 760px) { .motion-grid { grid-template-columns: 1fr; } }
+  .motion-panel {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    background: var(--surface);
+  }
+  .motion-panel__title { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  .motion-panel__desc { font-size: 12.5px; color: var(--ink-muted); margin: 0 0 16px; }
+  .curve-plot { width: 100%; height: 140px; display: block; }
+  .curve-plot text { font-family: var(--font-mono); font-size: 9px; fill: var(--ink-faint); }
+
+  .replay-row { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  .replay-btn {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border: none;
+    border-radius: 999px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  .replay-stage {
+    flex: 1;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--code-bg);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+  }
+  @keyframes ds-fade-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes ds-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  .play-fade-up { animation: ds-fade-up 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+  .play-fade-in { animation: ds-fade-in 0.9s ease-out both; }
+
+  .bounce-demo { display: flex; align-items: center; gap: 14px; }
+  .bounce-demo__dot-track { width: 40px; height: 56px; position: relative; }
+  .bounce-demo__dot {
+    position: absolute; top: 0; left: 50%;
+    width: 14px; height: 14px; margin-left: -7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: ds-bounce 1.8s ease-in-out infinite;
+  }
+  @keyframes ds-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+  @media (prefers-reduced-motion: reduce) { .bounce-demo__dot { animation: none; } }
+
+  /* ---------- components ---------- */
+  .comp-card {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  /* Fixed light ground: these previews render the real, light-only Hiroshi
+     UI, so the stage can't inherit this doc page's dark-mode background. */
+  .comp-card__stage {
+    padding: 36px 28px;
+    background:
+      radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--src-peach) 16%, transparent), transparent 55%),
+      var(--src-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .comp-card__meta {
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .comp-card__name { font-weight: 600; font-size: 13.5px; }
+  .comp-card__file { font-size: 11.5px; color: var(--ink-faint); }
+
+  /* live component styles, matching src/components/ui/*.tsx exactly */
+  .ds-button {
+    display: inline-flex;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+    text-decoration: none;
+  }
+  .ds-button__label {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--src-surface); color: var(--src-ink-soft);
+    padding: 20px 32px;
+    font-family: var(--font-display); font-weight: 600; font-size: 15px;
+    text-transform: uppercase; letter-spacing: -0.03em;
+  }
+  .ds-button__icon {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--src-peach); color: var(--src-ink-soft);
+    padding: 0 22px;
+  }
+
+  .ds-icon-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--src-ink-soft);
+    color: var(--src-ink-soft);
+    background: transparent;
+    transition: background 0.15s ease, color 0.15s ease;
+    text-decoration: none;
+  }
+  .ds-icon-btn:hover { background: var(--src-ink-soft); color: var(--src-surface); }
+
+  .ds-card {
+    width: 210px;
+    border-radius: 16px;
+    background: var(--src-surface);
+    padding: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  }
+  .ds-card__thumb {
+    height: 110px; border-radius: 7px; margin-bottom: 10px;
+    background: linear-gradient(160deg, var(--src-peach), var(--src-sun-end));
+  }
+  .ds-card__kicker { font-size: 10px; text-transform: uppercase; letter-spacing: -0.02em; color: var(--src-peach); font-weight: 600; display: block; margin-bottom: 4px; }
+  .ds-card__title { font-family: var(--font-display); font-weight: 600; font-size: 15px; text-transform: uppercase; letter-spacing: -0.03em; color: var(--src-ink-soft); margin: 0; }
+
+  .ds-kicker { font-family: var(--font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: -0.02em; color: var(--src-peach); }
+
+  .ds-segnav {
+    display: inline-flex; gap: 4px; padding: 4px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--src-surface) 70%, transparent);
+    border: 1px solid var(--src-border);
+  }
+  .ds-segnav button {
+    border: none; background: transparent; cursor: pointer;
+    padding: 8px 16px; border-radius: 999px;
+    font-family: var(--font-sans); font-size: 12px; text-transform: uppercase; letter-spacing: 0.025em;
+    color: var(--src-ink-soft-60);
+    transition: color 0.15s ease;
+    position: relative;
+  }
+  .ds-segnav button.is-active { color: var(--src-ink-soft); }
+  .ds-segnav__pill {
+    position: absolute; top: 4px; bottom: 4px; border-radius: 999px;
+    background: var(--src-surface); box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    transition: left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 0;
+  }
+  .ds-segnav button span { position: relative; z-index: 1; }
+
+  /* ---------- patterns ---------- */
+  .pattern-diagram {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .stage-demo { display: flex; align-items: center; gap: 24px; }
+  .stage-demo__frame {
+    position: relative;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: 8px;
+  }
+  .stage-demo__frame--big { width: 180px; height: 101px; }
+  .stage-demo__frame--small { width: 90px; height: 50.6px; }
+  .stage-demo__dot {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    left: 62%; top: 30%; transform: translate(-50%, -50%);
+  }
+  .stage-demo__label { font-size: 11px; color: var(--ink-muted); text-align: center; margin-top: 8px; }
+  .stage-demo__label b { display: block; color: var(--ink); font-family: var(--font-mono); font-size: 11px; }
+  .stage-demo__arrow { font-size: 20px; color: var(--ink-faint); }
+
+  .stack-demo {
+    display: flex;
+    align-items: flex-end;
+    height: 150px;
+  }
+  .stack-demo__layer {
+    width: 92px; height: 92px;
+    border-radius: 10px;
+    margin-left: -46px;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 8px;
+    font-size: 10.5px;
+    font-family: var(--font-mono);
+    color: var(--accent-ink);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .stack-demo__layer:first-child { margin-left: 0; }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+    margin-top: 80px;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  ::-webkit-scrollbar { height: 8px; width: 8px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar__mark"><span class="topbar__dot"></span>Hiroshi DS</div>
+  <div class="topbar__links">
+    <a href="#color">Color</a>
+    <a href="#type">Type</a>
+    <a href="#space">Space</a>
+    <a href="#elevation">Elevation</a>
+    <a href="#motion">Motion</a>
+    <a href="#components">Components</a>
+    <a href="#patterns">Patterns</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="intro">
+    <p class="intro__kicker"><span class="topbar__dot"></span>Design system · extracted from the Hiroshi daily-hero page</p>
+    <h1>Every token from one hero, made reusable.</h1>
+    <p class="lede">A samurai stands in a lavender field at dusk, cut in half by his own name. That page — one hero section — turned out to carry a complete, consistent system underneath: five colors, a two-family type pairing with one tracking rule, a spacing and elevation scale, and a small set of components. This document is that system, pulled out so it can be dropped into other software.</p>
+    <div class="intro__stats">
+      <div class="stat"><b>8</b><span>Colors</span></div>
+      <div class="stat"><b>3</b><span>Type families</span></div>
+      <div class="stat"><b>7</b><span>Named sizes</span></div>
+      <div class="stat"><b>5</b><span>Components</span></div>
+      <div class="stat"><b>2</b><span>Motion curves</span></div>
+    </div>
+  </section>
+
+  <section class="block" id="color">
+    <div class="block__head">
+      <span class="block__eyebrow">Foundations</span>
+      <h2 class="block__title">Color</h2>
+      <p class="block__desc">One neutral surface, two ink tones, one warm accent, and a supporting neutral for hairlines. The accent is not decorative — it's the literal start color of the radial "sun" gradient behind the hero portrait.</p>
+    </div>
+
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch__fill" style="background:var(--src-bg)"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">Background</p>
+          <p class="swatch__role">Page ground ("mist")</p>
+          <div class="swatch__values"><code>#F6F8FC</code><code>--ds-color-background</code></div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__fill" style="background:var(--src-ink)"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">Ink</p>
+          <p class="swatch__role">Primary heading / display text</p>
+          <div class="swatch__values"><code>#4E405F</code><code>--ds-color-ink</code></div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__fill" style="background:var(--src-ink-soft)"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">Ink Soft</p>
+          <p class="swatch__role">Secondary text, UI labels, icon strokes</p>
+          <div class="swatch__values"><code>#463C52</code><code>--ds-color-ink-soft</code></div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__fill" style="background:var(--src-peach)"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">Peach</p>
+          <p class="swatch__role">Accent — buttons, kickers, sun gradient start</p>
+          <div class="swatch__values"><code>#FFAB85</code><code>--ds-color-peach</code></div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__fill" style="background:#fff;border-bottom:1px solid var(--src-border)"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">White</p>
+          <p class="swatch__role">Card surfaces, icon strokes on photos</p>
+          <div class="swatch__values"><code>#FFFFFF</code><code>--ds-color-white</code></div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__fill" style="background:#D6D6D6"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">Line</p>
+          <p class="swatch__role">Hairline strokes, used at 20% opacity</p>
+          <div class="swatch__values"><code>#D6D6D6</code><code>--ds-color-line</code></div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__fill" style="background:#C1C1C1"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">Icon Muted</p>
+          <p class="swatch__role">Low-emphasis icon strokes</p>
+          <div class="swatch__values"><code>#C1C1C1</code><code>--ds-color-icon-muted</code></div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__fill" style="background:#161616"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">Near Black</p>
+          <p class="swatch__role">Highest-contrast strokes (nav hamburger)</p>
+          <div class="swatch__values"><code>#161616</code><code>--ds-color-near-black</code></div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__fill" style="background:radial-gradient(circle at 40% 35%, var(--src-peach), var(--src-sun-end) 75%, transparent 100%)"></div>
+        <div class="swatch__body">
+          <p class="swatch__name">Sun gradient</p>
+          <p class="swatch__role">Radial accent behind the portrait</p>
+          <div class="swatch__values"><code>#FFAB85 → #EECF78 0%</code><code>--ds-gradient-sun</code></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="block__desc" style="margin-top:28px;font-size:13px;font-weight:600;color:var(--ink)">Alpha compositions in active use</p>
+    <div class="alpha-row">
+      <div class="alpha-chip"><div class="alpha-chip__swatch"><div class="alpha-chip__fill" style="background:rgba(70,60,82,0.6)"></div></div><div class="alpha-chip__label">ink-soft/60<code>inactive nav links</code></div></div>
+      <div class="alpha-chip"><div class="alpha-chip__swatch"><div class="alpha-chip__fill" style="background:rgba(70,60,82,0.8)"></div></div><div class="alpha-chip__label">ink-soft/80<code>secondary paragraphs</code></div></div>
+      <div class="alpha-chip"><div class="alpha-chip__swatch"><div class="alpha-chip__fill" style="background:rgba(255,255,255,0.6)"></div></div><div class="alpha-chip__label">white/60<code>glass nav pill</code></div></div>
+      <div class="alpha-chip"><div class="alpha-chip__swatch"><div class="alpha-chip__fill" style="background:rgba(255,255,255,0.8)"></div></div><div class="alpha-chip__label">white/80<code>icon button border</code></div></div>
+      <div class="alpha-chip"><div class="alpha-chip__swatch"><div class="alpha-chip__fill" style="background:rgba(255,255,255,0.95)"></div></div><div class="alpha-chip__label">white/95<code>caption on photo</code></div></div>
+      <div class="alpha-chip"><div class="alpha-chip__swatch"><div class="alpha-chip__fill" style="background:rgba(255,255,255,0.1)"></div></div><div class="alpha-chip__label">white/10<code>icon button hover</code></div></div>
+    </div>
+  </section>
+
+  <section class="block" id="type">
+    <div class="block__head">
+      <span class="block__eyebrow">Foundations</span>
+      <h2 class="block__title">Typography</h2>
+      <p class="block__desc">A geometric display face for headings and UI chrome, a humanist sans for body copy, and a monospace face for the data/code role — token names, hex values, measurements.</p>
+    </div>
+
+    <div class="type-pairing">
+      <div class="type-card type-card--display">
+        <p class="type-card__role">Display · headings, wordmark, buttons</p>
+        <p class="type-card__sample">Hiroshi</p>
+        <p class="type-card__meta">Space Grotesk · <code>500 / 600 / 700</code></p>
+      </div>
+      <div class="type-card type-card--sans">
+        <p class="type-card__role">Sans · body copy, nav</p>
+        <p class="type-card__sample">Hiroshi</p>
+        <p class="type-card__meta">Inter · <code>400 / 500 / 600</code></p>
+      </div>
+      <div class="type-card type-card--mono">
+        <p class="type-card__role">Mono · tokens, code, data</p>
+        <p class="type-card__sample">Hiroshi</p>
+        <p class="type-card__meta">JetBrains Mono · <code>400 / 500</code></p>
+      </div>
+    </div>
+    <p class="note">Substitutions: the source Figma file specifies two licensed faces — <b>ABC Ginto Nord</b> (display) and <b>Galvji</b> (sans) — which this build doesn't have a license for. Space Grotesk and Inter stand in as the closest open equivalents; swap <code>--ds-font-display</code> / <code>--ds-font-sans</code> if you own the originals.</p>
+
+    <div class="paper">
+      <div class="scale-row">
+        <span class="scale-row__sample" style="font-size:56px;letter-spacing:-2.24px">Hir</span>
+        <span class="scale-row__meta"><b>display-hero</b><span>281.822px</span><span>-11.27px</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-row__sample" style="font-size:20px;letter-spacing:-0.8px;text-transform:none">静寂に包まれた</span>
+        <span class="scale-row__meta"><b>caption</b><span>20px</span><span>-0.8px</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-row__sample" style="font-size:18px;letter-spacing:-0.72px">Lonely Samurai</span>
+        <span class="scale-row__meta"><b>title</b><span>18px</span><span>-0.72px</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-row__sample" style="font-size:17px;letter-spacing:-0.72px">Walking Through Whispers</span>
+        <span class="scale-row__meta"><b>title-sm</b><span>17px</span><span>-0.72px</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-row__sample" style="font-family:var(--font-sans);font-weight:400;text-transform:none;font-size:14px;letter-spacing:-0.14px;color:var(--src-ink-soft)">Wanders the quiet forest, seeking purpose.</span>
+        <span class="scale-row__meta"><b>body</b><span>14px</span><span>-0.14px</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-row__sample" style="font-family:var(--font-sans);font-weight:500;font-size:12px;letter-spacing:0.3px;color:var(--src-ink-soft)">Archive · Journey · Signals</span>
+        <span class="scale-row__meta"><b>label</b><span>12px</span><span>+0.3px</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-row__sample" style="font-family:var(--font-sans);font-weight:600;font-size:10px;letter-spacing:-0.4px;color:var(--src-peach)">風の導き</span>
+        <span class="scale-row__meta"><b>kicker</b><span>10px</span><span>-0.4px</span></span>
+      </div>
+    </div>
+
+    <p class="block__desc" style="margin-top:28px;font-size:13px;font-weight:600;color:var(--ink)">Tracking formula, not fixed values</p>
+    <p class="block__desc" style="margin-top:4px">Every size above traces to one of three rules — recompute from the em value when you change font-size rather than reusing a px number from a different size.</p>
+    <div class="tracking-demo">
+      <div class="tracking-demo__card">
+        <p class="tracking-demo__label">Display / heading / kicker</p>
+        <p class="tracking-demo__sample" style="letter-spacing:-0.04em">TIGHTENED</p>
+        <p class="tracking-demo__value"><code>-4%</code> of font-size</p>
+      </div>
+      <div class="tracking-demo__card">
+        <p class="tracking-demo__label">Body copy</p>
+        <p class="tracking-demo__sample" style="letter-spacing:-0.01em;text-transform:none;font-weight:400;font-family:var(--font-sans)">Barely tightened</p>
+        <p class="tracking-demo__value"><code>-1%</code> of font-size</p>
+      </div>
+      <div class="tracking-demo__card">
+        <p class="tracking-demo__label">Nav links (the one exception)</p>
+        <p class="tracking-demo__sample" style="letter-spacing:0.025em;font-family:var(--font-sans);font-weight:500;font-size:14px">OPENED UP</p>
+        <p class="tracking-demo__value"><code>+2.5%</code> — Tailwind's <code>tracking-wide</code></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="space">
+    <div class="block__head">
+      <span class="block__eyebrow">Foundations</span>
+      <h2 class="block__title">Spacing, radius &amp; elevation</h2>
+      <p class="block__desc">A standard 4px-based spacing scale, four radius steps from thumbnail corners to full pills, and three shadow depths.</p>
+    </div>
+
+    <div class="scale-strip">
+      <div class="strip-row"><span class="strip-row__label">space-1</span><div class="strip-row__bar" style="width:4px"></div><span class="strip-row__px">0.25rem / 4px</span></div>
+      <div class="strip-row"><span class="strip-row__label">space-2</span><div class="strip-row__bar" style="width:8px"></div><span class="strip-row__px">0.5rem / 8px</span></div>
+      <div class="strip-row"><span class="strip-row__label">space-3</span><div class="strip-row__bar" style="width:12px"></div><span class="strip-row__px">0.75rem / 12px</span></div>
+      <div class="strip-row"><span class="strip-row__label">space-4</span><div class="strip-row__bar" style="width:16px"></div><span class="strip-row__px">1rem / 16px</span></div>
+      <div class="strip-row"><span class="strip-row__label">space-6</span><div class="strip-row__bar" style="width:24px"></div><span class="strip-row__px">1.5rem / 24px</span></div>
+      <div class="strip-row"><span class="strip-row__label">space-8</span><div class="strip-row__bar" style="width:32px"></div><span class="strip-row__px">2rem / 32px</span></div>
+      <div class="strip-row"><span class="strip-row__label">space-10</span><div class="strip-row__bar" style="width:40px"></div><span class="strip-row__px">2.5rem / 40px</span></div>
+    </div>
+
+    <p class="block__desc" style="margin:32px 0 16px;font-size:13px;font-weight:600;color:var(--ink)">Radius</p>
+    <div class="sample-grid">
+      <div class="sample-tile"><div class="sample-tile__shape" style="border-radius:7px"></div><div class="sample-tile__label"><b>7px</b>thumbnails</div></div>
+      <div class="sample-tile"><div class="sample-tile__shape" style="border-radius:12px"></div><div class="sample-tile__label"><b>12px</b>buttons</div></div>
+      <div class="sample-tile"><div class="sample-tile__shape" style="border-radius:16px"></div><div class="sample-tile__label"><b>16px</b>cards</div></div>
+      <div class="sample-tile"><div class="sample-tile__shape" style="border-radius:999px"></div><div class="sample-tile__label"><b>999px</b>pills / icons</div></div>
+    </div>
+
+    <p class="block__desc" style="margin:32px 0 16px;font-size:13px;font-weight:600;color:var(--ink)" id="elevation">Elevation</p>
+    <div class="sample-grid">
+      <div class="sample-tile"><div class="sample-tile__shape" style="border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,0.06);border-color:transparent"></div><div class="sample-tile__label"><b>shadow-sm</b>active nav pill</div></div>
+      <div class="sample-tile"><div class="sample-tile__shape" style="border-radius:12px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);border-color:transparent"></div><div class="sample-tile__label"><b>shadow-lg</b>explore button</div></div>
+      <div class="sample-tile"><div class="sample-tile__shape" style="border-radius:12px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);border-color:transparent"></div><div class="sample-tile__label"><b>shadow-xl</b>cards</div></div>
+    </div>
+
+    <p class="block__desc" style="margin:32px 0 16px;font-size:13px;font-weight:600;color:var(--ink)">Blur</p>
+    <div class="blur-row">
+      <div class="blur-tile"><div class="blur-tile__blob" style="filter:blur(10.2px)"></div><div class="blur-tile__label"><b>10.2px</b>small blob</div></div>
+      <div class="blur-tile"><div class="blur-tile__blob" style="filter:blur(10.85px)"></div><div class="blur-tile__label"><b>10.85px</b>large blob</div></div>
+      <div class="blur-tile"><div class="blur-tile__blob" style="filter:blur(4px);width:64px;height:64px"></div><div class="blur-tile__label"><b>4px</b>glass nav (backdrop)</div></div>
+    </div>
+  </section>
+
+  <section class="block" id="motion">
+    <div class="block__head">
+      <span class="block__eyebrow">Foundations</span>
+      <h2 class="block__title">Motion</h2>
+      <p class="block__desc">Two entrance curves, one looping bounce, one spring for the interactive nav pill — every one of them collapses under <code class="mono">prefers-reduced-motion: reduce</code>.</p>
+    </div>
+
+    <div class="motion-grid">
+      <div class="motion-panel">
+        <p class="motion-panel__title">Entrance ease</p>
+        <p class="motion-panel__desc"><code class="mono">cubic-bezier(0.16, 1, 0.3, 1)</code> — a fast start that eases into place, used for every staggered entrance.</p>
+        <svg class="curve-plot" viewBox="0 0 260 140" preserveAspectRatio="xMidYMid meet">
+          <line x1="30" y1="10" x2="30" y2="115" stroke="var(--line-strong)" stroke-width="1"/>
+          <line x1="30" y1="115" x2="245" y2="115" stroke="var(--line-strong)" stroke-width="1"/>
+          <path d="M 30 115 C 30 115, 65.6 -15.5, 94.5 3 S 190 108, 245 15" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <circle cx="30" cy="115" r="3.5" fill="var(--ink-soft)"/>
+          <circle cx="245" cy="15" r="3.5" fill="var(--ink-soft)"/>
+          <text x="14" y="128">0</text>
+          <text x="238" y="12">1</text>
+          <text x="8" y="16">value</text>
+          <text x="215" y="130">time</text>
+        </svg>
+      </div>
+
+      <div class="motion-panel">
+        <p class="motion-panel__title">Entrance demo</p>
+        <p class="motion-panel__desc">fade-up adds a 28px rise; fade-in is opacity only — use fade-in on any element that also needs a JS-driven transform, so the two never fight over <code class="mono">transform</code>.</p>
+        <div class="replay-row">
+          <button class="replay-btn" id="replayFadeUp">Replay</button>
+          <div class="replay-stage"><span id="fadeUpTarget">fade-up · 0.7s</span></div>
+        </div>
+        <div class="replay-row">
+          <button class="replay-btn" id="replayFadeIn">Replay</button>
+          <div class="replay-stage"><span id="fadeInTarget">fade-in · 0.9s</span></div>
+        </div>
+        <div class="replay-row">
+          <div class="bounce-demo">
+            <div class="bounce-demo__dot-track"><div class="bounce-demo__dot"></div></div>
+          </div>
+          <div class="replay-stage" style="background:transparent;padding:0;color:var(--ink-muted);font-family:var(--font-sans);font-weight:400;text-transform:none;font-size:12.5px">bounce · 1.8s loop, ±8px — scroll cue</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Stagger: entrance delays step up in ~0.05s increments from background layers to foreground UI, reaching <b>0.65s</b> for the last element (the scroll cue). Nav pill switches use a Framer Motion spring at <code>stiffness 400 / damping 32</code> instead of a duration curve — it should feel physical, not timed.</p>
+  </section>
+
+  <section class="block" id="components">
+    <div class="block__head">
+      <span class="block__eyebrow">Building blocks</span>
+      <h2 class="block__title">Components</h2>
+      <p class="block__desc">Five patterns extracted into standalone React + Tailwind components (<code class="mono">src/components/ui/</code>), rendered here with plain CSS so this page works with no framework at all.</p>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-card__stage">
+        <a class="ds-button" href="#"><span class="ds-button__label">Explore</span><span class="ds-button__icon">→</span></a>
+      </div>
+      <div class="comp-card__meta"><span class="comp-card__name">Button</span><span class="comp-card__file">Button.tsx</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-card__stage">
+        <a class="ds-icon-btn" href="#">◐</a>
+        <a class="ds-icon-btn" href="#">▶</a>
+        <a class="ds-icon-btn" href="#">in</a>
+        <a class="ds-icon-btn" href="#">f</a>
+      </div>
+      <div class="comp-card__meta"><span class="comp-card__name">IconButton</span><span class="comp-card__file">IconButton.tsx</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-card__stage">
+        <div class="ds-card">
+          <div class="ds-card__thumb"></div>
+          <span class="ds-card__kicker">Field Notes</span>
+          <p class="ds-card__title">Walking Through Whispers</p>
+        </div>
+      </div>
+      <div class="comp-card__meta"><span class="comp-card__name">Card / CardTitle / CardText</span><span class="comp-card__file">Card.tsx</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-card__stage">
+        <span class="ds-kicker">風の導き · The Wind's Guidance</span>
+      </div>
+      <div class="comp-card__meta"><span class="comp-card__name">Kicker</span><span class="comp-card__file">Kicker.tsx</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-card__stage">
+        <nav class="ds-segnav" id="segnav">
+          <div class="ds-segnav__pill" id="segnavPill"></div>
+          <button class="is-active" data-item><span>Home</span></button>
+          <button data-item><span>Archive</span></button>
+          <button data-item><span>Journey</span></button>
+          <button data-item><span>Signals</span></button>
+        </nav>
+      </div>
+      <div class="comp-card__meta"><span class="comp-card__name">SegmentedNav</span><span class="comp-card__file">SegmentedNav.tsx</span></div>
+    </div>
+  </section>
+
+  <section class="block" id="patterns">
+    <div class="block__head">
+      <span class="block__eyebrow">Ways of working</span>
+      <h2 class="block__title">Layout patterns</h2>
+      <p class="block__desc">Two structural decisions that shaped the hero more than any single token — worth carrying into other projects even if none of the visual style comes along.</p>
+    </div>
+
+    <p class="block__desc" style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px">The scaled stage</p>
+    <div class="pattern-diagram">
+      <div class="stage-demo">
+        <div>
+          <div class="stage-demo__frame stage-demo__frame--big"><div class="stage-demo__dot"></div></div>
+          <p class="stage-demo__label"><b>1440 × 810</b>design frame</p>
+        </div>
+        <span class="stage-demo__arrow">⟶</span>
+        <div>
+          <div class="stage-demo__frame stage-demo__frame--small"><div class="stage-demo__dot"></div></div>
+          <p class="stage-demo__label"><b>scale(0.5)</b>any viewport</p>
+        </div>
+      </div>
+    </div>
+    <p class="block__desc" style="margin-top:14px">Build the composition once at its reference size with absolute pixel coordinates, wrap it in a container sized to <code class="mono">height × (containerWidth / 1440)</code>, then apply <code class="mono">transform: scale()</code> — recomputed on resize. Every element keeps its exact relationship to every other element at any screen size; fluid vw/%-based positioning can't guarantee that once text and photos have to line up at a specific point.</p>
+
+    <p class="block__desc" style="font-size:13px;font-weight:600;color:var(--ink);margin:36px 0 14px">Stacking by DOM order</p>
+    <div class="pattern-diagram">
+      <div class="stack-demo">
+        <div class="stack-demo__layer" style="background:#e4e0ec">1 rings</div>
+        <div class="stack-demo__layer" style="background:#d7cfe6">2 wordmark</div>
+        <div class="stack-demo__layer" style="background:#c9b8d9">3 field</div>
+        <div class="stack-demo__layer" style="background:var(--ink-soft);color:#fff">4 portrait</div>
+        <div class="stack-demo__layer" style="background:var(--accent)">5 cards</div>
+      </div>
+    </div>
+    <p class="block__desc" style="margin-top:14px">Every scene element is <code class="mono">position: absolute</code> with z-index left at <code class="mono">auto</code> — depth is purely source order, first child furthest back. It's fragile if you paste a new element without thinking about where it needs to sit (a background layer placed too late in the source will paint over foreground content), but far more predictable than juggling z-index numbers once a page has twenty-plus absolutely positioned children.</p>
+  </section>
+
+  <footer>
+    <span>Hiroshi Design System · extracted Sep 2026</span>
+    <span>Tokens: <code class="mono">src/design-system/tokens.css</code> · <code class="mono">tokens.json</code> · Components: <code class="mono">src/components/ui/</code></span>
+  </footer>
+
+</div>
+
+<script>
+  document.getElementById('replayFadeUp').addEventListener('click', function () {
+    var el = document.getElementById('fadeUpTarget');
+    el.classList.remove('play-fade-up');
+    void el.offsetWidth;
+    el.classList.add('play-fade-up');
+  });
+  document.getElementById('replayFadeIn').addEventListener('click', function () {
+    var el = document.getElementById('fadeInTarget');
+    el.classList.remove('play-fade-in');
+    void el.offsetWidth;
+    el.classList.add('play-fade-in');
+  });
+
+  var nav = document.getElementById('segnav');
+  var pill = document.getElementById('segnavPill');
+  var buttons = Array.from(nav.querySelectorAll('button'));
+
+  function movePill(btn, animate) {
+    var navRect = nav.getBoundingClientRect();
+    var btnRect = btn.getBoundingClientRect();
+    if (!animate) pill.style.transition = 'none';
+    pill.style.left = (btnRect.left - navRect.left) + 'px';
+    pill.style.width = btnRect.width + 'px';
+    if (!animate) { void pill.offsetWidth; pill.style.transition = ''; }
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      buttons.forEach(function (b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      movePill(btn, true);
+    });
+  });
+
+  window.addEventListener('resize', function () {
+    var active = nav.querySelector('.is-active');
+    if (active) movePill(active, false);
+  });
+
+  movePill(buttons[0], false);
+</script>
+</body>
+</html>

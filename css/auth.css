@@ -1,0 +1,153 @@
+/* ============================================================
+   TORA FINANCE — auth screens (login / register)
+   ============================================================ */
+
+.auth-shell {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 920px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .auth-art { display: none; }
+}
+
+.auth-art {
+  position: relative;
+  background: var(--ink-950);
+  overflow: hidden;
+}
+.auth-art__media {
+  position: absolute; inset: 0;
+  background-image: url("../assets/img/Stylized_tiger_in_dynamic_pose_2K_20260912202437.jpeg");
+  background-size: cover;
+  background-position: center;
+}
+.auth-art__scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(190deg, rgba(13,13,18,0.15) 0%, rgba(13,13,18,0.55) 55%, rgba(13,13,18,0.94) 100%);
+}
+.auth-art__content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px;
+}
+.auth-art__brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-size: 17px; color: var(--text-on-dark);
+}
+.auth-art__quote {
+  max-width: 34ch;
+  color: var(--text-on-dark);
+}
+.auth-art__quote p {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.35;
+  letter-spacing: var(--track-tight);
+  margin-bottom: 14px;
+}
+.auth-art__quote span {
+  font-size: 12.5px;
+  color: var(--text-on-dark-faint);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+}
+
+.auth-form-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  background: var(--paper-050);
+}
+.auth-form {
+  width: 100%;
+  max-width: 400px;
+}
+.auth-form__back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--text-on-light-soft);
+  margin-bottom: 28px;
+  text-transform: uppercase; letter-spacing: var(--track-wide);
+}
+.auth-form__back:hover { color: var(--text-on-light); }
+.auth-form h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+.auth-form__sub {
+  color: var(--text-on-light-soft);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+.auth-form__sub a { color: var(--gold-deep); font-weight: 600; }
+.auth-form__sub a:hover { text-decoration: underline; }
+
+.field { margin-bottom: 20px; }
+.field label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--text-on-light-soft);
+  margin-bottom: 8px;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-on-light-strong);
+  background: #fff;
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  color: var(--text-on-light);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(204, 154, 68, 0.18);
+}
+.field__error {
+  display: none;
+  margin-top: 7px;
+  font-size: 12.5px;
+  color: var(--seal-bright);
+}
+.field.has-error input { border-color: var(--seal-bright); }
+.field.has-error .field__error { display: block; }
+.field__hint { margin-top: 7px; font-size: 12px; color: var(--text-on-light-faint); }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 420px) { .field-row { grid-template-columns: 1fr; } }
+
+.form-alert {
+  display: none;
+  padding: 13px 16px;
+  border-radius: var(--r-sm);
+  font-size: 13.5px;
+  margin-bottom: 22px;
+  line-height: 1.55;
+}
+.form-alert.is-visible { display: block; }
+.form-alert--error { background: rgba(163, 57, 42, 0.1); color: var(--seal); border: 1px solid rgba(163, 57, 42, 0.25); }
+.form-alert--success { background: rgba(76, 124, 110, 0.12); color: var(--jade); border: 1px solid rgba(76, 124, 110, 0.28); }
+
+.auth-submit { margin-top: 8px; }
+.auth-submit .btn__label { flex: 1; justify-content: center; }
+
+.spinner {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  animation: tf-spin-fast 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes tf-spin-fast { to { transform: rotate(360deg); } }

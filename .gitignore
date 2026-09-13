@@ -1,0 +1,15 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Vercel
+.vercel
+
+# Unused/unreferenced heavy assets (not linked from any page).
+# Keep them on disk for local use, but keep the repo light.
+imgs/
+video/davinci_dragon_flying_through_misty_night_clouds_above_mou_4K.mp4

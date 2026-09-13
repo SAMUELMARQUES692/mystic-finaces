@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Painel — Tora Finance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐯</text></svg>">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/auth.css">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="app-scrim" id="appScrim"></div>
+
+  <aside class="app-sidebar">
+    <div class="app-sidebar__brand"><span class="topbar__mark-glyph">虎</span> Tora Finance</div>
+
+    <nav class="app-nav">
+      <a class="app-nav__item" data-route="overview" href="#/overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 16V9"/><path d="M13 16v-4"/><path d="M17 16v-7"/></svg>
+        <span>Visão geral</span>
+      </a>
+      <a class="app-nav__item" data-route="transfer" href="#/transfer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+        <span>Transferir</span>
+      </a>
+      <a class="app-nav__item" data-route="statement" href="#/statement">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+        <span>Extrato</span>
+      </a>
+      <a class="app-nav__item" data-route="profile" href="#/profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/></svg>
+        <span>Perfil</span>
+      </a>
+
+      <div class="app-nav__divider" id="adminDivider" hidden></div>
+      <div class="app-nav__group-label" id="adminLabel" hidden>Administração</div>
+      <a class="app-nav__item" data-route="admin" href="#/admin" id="adminNavItem" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg>
+        <span>Usuários</span>
+      </a>
+    </nav>
+
+    <div class="app-sidebar__footer">
+      <div class="app-user">
+        <div class="app-user__avatar" id="userAvatar">U</div>
+        <div>
+          <div class="app-user__email" id="userEmail">—</div>
+          <div class="app-user__id mono" id="userId"></div>
+        </div>
+      </div>
+      <button class="app-logout" id="logoutBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Sair
+      </button>
+    </div>
+  </aside>
+
+  <main class="app-main">
+
+    <div class="app-topbar">
+      <button class="app-topbar__menu-btn" id="menuBtn">☰</button>
+      <div>
+        <span class="kicker" id="pageKicker">観察 · Visão geral</span>
+        <h1 id="pageTitle">Visão geral</h1>
+        <p class="app-topbar__sub" id="pageSub">Sua conta, resumida.</p>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="view" id="view-overview">
+      <div id="overviewLoading" class="stat-grid">
+        <div class="card stat-card stat-card--hero"><div class="skeleton" style="height:14px;width:40%;margin-bottom:16px;background:rgba(243,234,217,0.1)"></div><div class="skeleton" style="height:34px;width:60%;background:rgba(243,234,217,0.1)"></div></div>
+        <div class="card stat-card"><div class="skeleton" style="height:14px;width:60%;margin-bottom:14px"></div><div class="skeleton" style="height:26px;width:80%"></div></div>
+        <div class="card stat-card"><div class="skeleton" style="height:14px;width:60%;margin-bottom:14px"></div><div class="skeleton" style="height:26px;width:80%"></div></div>
+      </div>
+
+      <div id="overviewContent" hidden>
+        <div class="stat-grid">
+          <div class="card stat-card stat-card--hero">
+            <span class="stat-card__seal">虎</span>
+            <p class="stat-card__label">Saldo disponível</p>
+            <p class="stat-card__value stat-card__value--hero" id="ovBalance">—</p>
+          </div>
+          <div class="card stat-card">
+            <p class="stat-card__label">Agência</p>
+            <p class="stat-card__value mono" id="ovAgency">—</p>
+          </div>
+          <div class="card stat-card">
+            <p class="stat-card__label">Número da conta</p>
+            <p class="stat-card__value mono" id="ovNumber">—</p>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <div class="panel__head">
+            <div>
+              <p class="panel__title">Atalhos</p>
+              <p class="panel__desc">Transfira valores ou confira seu extrato.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <a href="#/transfer" class="btn btn--primary btn--sm"><span class="btn__label">Nova transferência</span><span class="btn__icon">→</span></a>
+            <a href="#/statement" class="btn btn--ghost-light btn--sm"><span class="btn__label">Ver extrato</span></a>
+          </div>
+        </div>
+      </div>
+
+      <div id="overviewEmpty" class="card empty-state" hidden>
+        <div class="empty-state__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>
+        </div>
+        <p class="empty-state__title">Você ainda não tem uma conta bancária</p>
+        <p class="empty-state__desc">Informe agência, número e um saldo inicial para abrir sua conta no Tora Finance.</p>
+        <form id="createAccountForm" style="text-align:left;max-width:360px;margin:0 auto">
+          <div class="field">
+            <label for="accBalance">Saldo inicial</label>
+            <input type="number" id="accBalance" step="0.01" min="0" placeholder="0,00" required>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="accAgency">Agência</label>
+              <input type="text" id="accAgency" maxlength="10" placeholder="0001" required>
+            </div>
+            <div class="field">
+              <label for="accNumber">Número</label>
+              <input type="text" id="accNumber" maxlength="20" placeholder="00219876-5" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary btn--full" id="createAccountBtn">
+            <span class="btn__label" id="createAccountLabel">Abrir conta</span>
+            <span class="btn__icon">→</span>
+          </button>
+        </form>
+      </div>
+
+      <div id="overviewError" class="form-alert form-alert--error" hidden></div>
+    </section>
+
+    <!-- TRANSFER -->
+    <section class="view" id="view-transfer">
+      <div class="card panel">
+        <div class="panel__head">
+          <div>
+            <p class="panel__title">Nova transferência</p>
+            <p class="panel__desc">Informe o ID da conta de destino e o valor a transferir.</p>
+          </div>
+        </div>
+
+        <div class="form-alert form-alert--error" id="transferAlert"></div>
+        <div class="form-alert form-alert--success" id="transferSuccess"></div>
+
+        <form id="transferForm">
+          <div class="field-row">
+            <div class="field" id="fieldDestination">
+              <label for="destinationId">ID da conta de destino</label>
+              <input type="number" id="destinationId" min="1" step="1" placeholder="Ex: 4" required>
+              <p class="field__error">Informe o ID da conta de destino.</p>
+            </div>
+            <div class="field" id="fieldAmount">
+              <label for="amount">Valor (R$)</label>
+              <input type="number" id="amount" min="0.01" step="0.01" placeholder="0,00" required>
+              <p class="field__error">Informe um valor válido (mínimo R$ 0,01).</p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="description">Descrição (opcional)</label>
+            <input type="text" id="description" maxlength="140" placeholder="Ex: Pagamento combinado">
+          </div>
+          <button type="submit" class="btn btn--primary auth-submit" id="transferBtn">
+            <span class="btn__label" id="transferLabel">Transferir</span>
+            <span class="btn__icon">→</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- STATEMENT -->
+    <section class="view" id="view-statement">
+      <div class="card panel">
+        <div class="panel__head">
+          <div>
+            <p class="panel__title">Extrato de transações</p>
+            <p class="panel__desc">Histórico completo da sua conta.</p>
+          </div>
+        </div>
+
+        <div id="statementLoading">
+          <div class="skeleton" style="height:44px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:44px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:44px"></div>
+        </div>
+
+        <div style="overflow-x:auto" id="statementTableWrap" hidden>
+          <table class="tx-table">
+            <thead>
+              <tr><th>Data</th><th>Direção</th><th>Origem → Destino</th><th>Valor</th><th>Status</th><th>Descrição</th></tr>
+            </thead>
+            <tbody id="statementBody"></tbody>
+          </table>
+        </div>
+
+        <div id="statementEmpty" class="empty-state" hidden>
+          <div class="empty-state__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l3 3v15H6z"/></svg>
+          </div>
+          <p class="empty-state__title">Nenhuma transação por aqui ainda</p>
+          <p class="empty-state__desc">Assim que você fizer uma transferência, ela aparece neste extrato.</p>
+        </div>
+
+        <div id="statementError" class="form-alert form-alert--error" hidden></div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="view" id="view-profile">
+      <div class="card panel">
+        <div class="panel__head">
+          <div>
+            <p class="panel__title">Seu perfil</p>
+            <p class="panel__desc">Dados de cadastro na plataforma.</p>
+          </div>
+        </div>
+
+        <div id="profileLoading">
+          <div class="skeleton" style="height:20px;width:40%;margin-bottom:14px"></div>
+          <div class="skeleton" style="height:20px;width:60%;margin-bottom:14px"></div>
+          <div class="skeleton" style="height:20px;width:30%"></div>
+        </div>
+
+        <div id="profileContent" hidden>
+          <div class="tx-table" style="display:block">
+            <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line-on-light)"><span class="text-soft-light">Nome</span><b id="pfName">—</b></div>
+            <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line-on-light)"><span class="text-soft-light">E-mail</span><b id="pfEmail">—</b></div>
+            <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line-on-light)"><span class="text-soft-light">Criado em</span><b id="pfCreated">—</b></div>
+            <div style="display:flex;justify-content:space-between;padding:12px 0"><span class="text-soft-light">Permissões</span><b id="pfScopes">—</b></div>
+          </div>
+        </div>
+
+        <div id="profileError" class="form-alert form-alert--error" hidden></div>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="view" id="view-admin">
+      <div class="card panel">
+        <div class="panel__head">
+          <div>
+            <p class="panel__title">Atualizar usuário</p>
+            <p class="panel__desc">A API não expõe uma listagem de usuários — informe o ID diretamente.</p>
+          </div>
+        </div>
+        <div class="form-alert form-alert--error" id="adminUpdateAlert"></div>
+        <div class="form-alert form-alert--success" id="adminUpdateSuccess"></div>
+        <form id="adminUpdateForm">
+          <div class="field-row">
+            <div class="field"><label for="auId">ID do usuário</label><input type="number" id="auId" min="1" required></div>
+            <div class="field"><label for="auName">Nome</label><input type="text" id="auName" required></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="auEmail">E-mail</label><input type="email" id="auEmail" required></div>
+            <div class="field"><label for="auPassword">Nova senha</label><input type="password" id="auPassword" required></div>
+          </div>
+          <div class="field">
+            <label for="auScopes">IDs de permissão (separados por vírgula)</label>
+            <input type="text" id="auScopes" placeholder="Ex: 2" required>
+            <p class="field__hint">Os IDs correspondem aos escopos cadastrados no backend (ex.: ADMIN, USER).</p>
+          </div>
+          <button type="submit" class="btn btn--primary" id="adminUpdateBtn">
+            <span class="btn__label" id="adminUpdateLabel">Atualizar usuário</span>
+            <span class="btn__icon">→</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="card panel">
+        <div class="panel__head">
+          <div>
+            <p class="panel__title">Remover usuário</p>
+            <p class="panel__desc">Ação permanente — não pode ser desfeita.</p>
+          </div>
+        </div>
+        <div class="form-alert form-alert--error" id="adminDeleteAlert"></div>
+        <div class="form-alert form-alert--success" id="adminDeleteSuccess"></div>
+        <form id="adminDeleteForm" class="inline-form">
+          <div class="field"><label for="adId">ID do usuário</label><input type="number" id="adId" min="1" required></div>
+          <button type="submit" class="btn btn--ghost-light" id="adminDeleteBtn">
+            <span class="btn__label" id="adminDeleteLabel">Remover</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/dashboard.js"></script>
+</body>
+</html>

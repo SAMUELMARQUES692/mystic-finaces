@@ -1,0 +1,183 @@
+/* ============================================================
+   TORA FINANCE — base styles, motion, components
+   ============================================================ */
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--paper-050);
+  color: var(--text-on-light);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--gold); color: var(--ink-950); }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { font: inherit; }
+
+.mono { font-family: var(--font-mono); }
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- reveal-on-scroll (mirrors Hiroshi's fade-up / fade-in) ---------- */
+@keyframes tf-fade-up { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes tf-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tf-scale-in { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+
+.reveal { opacity: 0; }
+.reveal.is-visible { animation: tf-fade-up 0.8s var(--ease-entrance) both; }
+.reveal--in.is-visible { animation: tf-fade-in 1s ease-out both; }
+.reveal--scale.is-visible { animation: tf-scale-in 0.7s var(--ease-entrance) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal--in, .reveal--scale { animation: none !important; opacity: 1 !important; }
+}
+
+/* ---------- kicker / eyebrow ---------- */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--gold-deep);
+}
+.kicker::before {
+  content: "";
+  width: 7px; height: 7px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--gold-bright), var(--seal));
+  flex-shrink: 0;
+}
+.kicker--on-dark { color: var(--gold-bright); }
+
+/* ---------- headings ---------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: var(--track-tight);
+  margin: 0;
+}
+p { margin: 0; }
+
+/* ---------- buttons (structure of Hiroshi Button.tsx, own skin) ---------- */
+.btn {
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.35s var(--ease-spring), box-shadow 0.3s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.btn:active { transform: translateY(0); }
+
+.btn__label {
+  display: flex; align-items: center; justify-content: center;
+  padding: 15px 26px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: var(--track-tight);
+}
+.btn__icon {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 18px;
+  font-size: 15px;
+}
+
+.btn--primary .btn__label { background: var(--ink-900); color: var(--paper-050); }
+.btn--primary .btn__icon { background: var(--grad-gold); color: var(--ink-950); }
+
+.btn--ghost { box-shadow: none; border: 1px solid var(--line-on-dark-strong); }
+.btn--ghost .btn__label { background: transparent; color: var(--text-on-dark); padding: 14px 24px; }
+.btn--ghost:hover { transform: none; background: rgba(243,234,217,0.06); }
+
+.btn--ghost-light { box-shadow: none; border: 1px solid var(--line-on-light-strong); }
+.btn--ghost-light .btn__label { background: transparent; color: var(--text-on-light); padding: 14px 24px; }
+.btn--ghost-light:hover { transform: none; background: rgba(36,31,24,0.04); }
+
+.btn--sm .btn__label { padding: 11px 18px; font-size: 13px; }
+.btn--sm .btn__icon { padding: 0 14px; }
+.btn--full { width: 100%; }
+.btn--full .btn__label { flex: 1; }
+
+button.btn { border: none; }
+
+/* icon button (circular) */
+.icon-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line-on-dark-strong);
+  color: var(--text-on-dark);
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.icon-btn:hover { background: var(--text-on-dark); color: var(--ink-900); transform: translateY(-2px); }
+.icon-btn svg { width: 17px; height: 17px; }
+
+/* ---------- cards ---------- */
+.card {
+  background: var(--paper-050);
+  border: 1px solid var(--line-on-light);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- segmented nav pill (mirrors Hiroshi SegmentedNav) ---------- */
+.segnav {
+  position: relative;
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: rgba(243, 234, 217, 0.06);
+  border: 1px solid var(--line-on-dark);
+}
+.segnav button {
+  position: relative;
+  border: none; background: transparent; cursor: pointer;
+  padding: 9px 18px; border-radius: var(--r-pill);
+  font-family: var(--font-sans); font-weight: 500; font-size: 12.5px;
+  text-transform: uppercase; letter-spacing: var(--track-wide);
+  color: var(--text-on-dark-soft);
+  transition: color 0.2s ease;
+}
+.segnav button.is-active { color: var(--ink-950); }
+.segnav__pill {
+  position: absolute; top: 4px; bottom: 4px; border-radius: var(--r-pill);
+  background: var(--grad-gold);
+  box-shadow: var(--shadow-gold);
+  transition: left 0.4s var(--ease-spring), width 0.4s var(--ease-spring);
+  z-index: 0;
+}
+.segnav button span { position: relative; z-index: 1; }
+
+/* ---------- scrollbar ---------- */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-on-light-strong); border-radius: 999px; }
+
+/* ---------- utility ---------- */
+.text-gold { color: var(--gold-deep); }
+.text-soft-dark { color: var(--text-on-dark-soft); }
+.text-soft-light { color: var(--text-on-light-soft); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
