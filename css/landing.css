@@ -28,6 +28,8 @@
   font-size: 17px;
   letter-spacing: var(--track-tight);
   color: var(--text-on-dark);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .topbar__mark-glyph {
   width: 34px; height: 34px; border-radius: 9px;
@@ -50,13 +52,23 @@
   transition: color 0.2s ease, background 0.2s ease;
 }
 .topbar__links a:hover { color: var(--text-on-dark); background: rgba(243,234,217,0.08); }
-.topbar__actions { display: flex; align-items: center; gap: 10px; }
+.topbar__actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .topbar__login {
   font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: var(--track-wide);
   color: var(--text-on-dark-soft); padding: 10px 6px;
+  white-space: nowrap;
 }
 .topbar__login:hover { color: var(--text-on-dark); }
 @media (max-width: 900px) { .topbar__links { display: none; } }
+@media (max-width: 480px) {
+  .topbar { padding: 14px 16px; gap: 10px; }
+  .topbar.is-scrolled { padding: 10px 16px; }
+  .topbar__mark { font-size: 14px; gap: 8px; }
+  .topbar__mark-glyph { width: 28px; height: 28px; font-size: 14px; border-radius: 8px; }
+  .topbar__login { display: none; }
+  .topbar__actions .btn--sm .btn__label { padding: 10px 14px; font-size: 12px; }
+  .topbar__actions .btn--sm .btn__icon { padding: 0 12px; }
+}
 
 /* ---------- cinematic scroll pin (slow scrub + crossfade rig) ---------- */
 .cine-pin {
@@ -64,7 +76,13 @@
   height: 320vh;
 }
 .cine-pin--tiger {
-  height: 340vh;
+  /* height is intrinsic (sticky video + its scrolling content below), so the
+     pin always has exactly enough room for whatever the recursos grid needs —
+     a fixed vh guess here would either clip the content (mobile, tall single
+     column) or leave a gap before the next section. The dwell phase (pure lit
+     video before the mist handoff) is added as trailing space on
+     .tiger-band__scroll instead. */
+  height: auto;
   margin-top: -185vh;
 }
 .cine-pin > .hero,
@@ -75,7 +93,7 @@
 }
 @media (max-width: 720px) {
   .cine-pin { height: 220vh; }
-  .cine-pin--tiger { height: 260vh; margin-top: -155vh; }
+  .cine-pin--tiger { height: auto; margin-top: -155vh; }
 }
 
 /* ---------- hero ---------- */
@@ -208,6 +226,7 @@
 
 @media (max-width: 720px) {
   .hero__video { object-position: 62% 40%; }
+  .hero__stats { gap: 28px; row-gap: 18px; }
 }
 
 /* ---------- tiger band (dragon -> tiger handoff, second fold) ---------- */
@@ -245,7 +264,9 @@
 .tiger-band__scroll {
   position: relative;
   z-index: 2;
-  padding-bottom: 120px;
+  /* the extra vh at the end is the dim/dwell phase: pure lit video, no card
+     content, right before the mist bridge — see TIGER_DIM_START in hero-scroll.js */
+  padding-bottom: calc(120px + 65vh);
 }
 .tiger-band__intro {
   position: relative;

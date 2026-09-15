@@ -10,16 +10,24 @@
   var mist = document.querySelector('.fold-bridge__mist');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* fraction of the tiger pin's own scroll range spent crossfading over the dragon.
-     Tuned so the veil reaches 1 right as the hero's own dark fade finishes, so the
-     two effects dissolve into each other with no gap and no hard cut. */
-  var CROSSFADE = 0.35;
+  /* the dragon->tiger crossfade, timed against the HERO pin's own scroll (fixed,
+     content-independent) rather than the tiger pin's (which grows with the
+     recursos grid) — keeping it a fraction of the tiger pin's range would make
+     the crossfade drag out as that content grows. Tuned to finish comfortably
+     before heroProgress reaches 1, so the dissolve reads as quick and decisive. */
+  var CROSSFADE_START = 0.58;
+  var CROSSFADE_END = 0.80;
   /* hero text clears out early in its own scroll, well before the tiger crossfade */
   var TEXT_EXIT_START = 0.06;
   var TEXT_EXIT_END = 0.32;
   /* the tiger video/content stays fully lit while its scrolling content (recursos)
      is on screen; it only dims in the last stretch, right before the mist bridge */
   var TIGER_DIM_START = 0.82;
+
+  /* how quickly the smoothed (rendered) progress catches up to the real scroll
+     position each frame — lower = silkier but laggier, higher = snappier.
+     Applied per-frame via an exponential approach so it stays frame-rate independent. */
+  var SMOOTHING = 0.16;
 
   function watchDuration(video, onReady) {
     if (!video) return;
@@ -49,12 +57,11 @@
     return Math.min(Math.max(-rect.top / scrollable, 0), 1);
   }
 
-  var ticking = false;
+  var heroSmooth = 0, tigerSmooth = 0;
+  var initialized = false;
+  var rafId = null;
 
-  function update() {
-    ticking = false;
-
-    var heroProgress = pinProgress(heroPin);
+  function render(heroProgress, tigerProgress) {
     hero.style.setProperty('--hero-scrim', heroProgress.toFixed(3));
     if (!reduceMotion) {
       hero.style.setProperty('--hero-scale', (1 + heroProgress * 0.16).toFixed(4));
@@ -68,8 +75,7 @@
       hero.style.setProperty('--hero-text-shift', (-textProgress * 110).toFixed(1) + 'px');
     }
 
-    var tigerProgress = pinProgress(tigerPin);
-    var veil = Math.min(tigerProgress / CROSSFADE, 1);
+    var veil = Math.min(Math.max((heroProgress - CROSSFADE_START) / (CROSSFADE_END - CROSSFADE_START), 0), 1);
     var tigerDim = Math.min(Math.max((tigerProgress - TIGER_DIM_START) / (1 - TIGER_DIM_START), 0), 1);
     tigerBand.style.setProperty('--tiger-veil', veil.toFixed(3));
     tigerBand.style.setProperty('--tiger-scrim', tigerDim.toFixed(3));
@@ -81,14 +87,44 @@
     scrubTo(tigerVideo, tigerDuration, tigerProgress * tigerDuration);
   }
 
-  function onScroll() {
-    if (!ticking) {
-      window.requestAnimationFrame(update);
-      ticking = true;
+  function tick() {
+    var heroTarget = pinProgress(heroPin);
+    var tigerTarget = pinProgress(tigerPin);
+
+    if (reduceMotion) {
+      heroSmooth = heroTarget;
+      tigerSmooth = tigerTarget;
+    } else {
+      if (!initialized) {
+        heroSmooth = heroTarget;
+        tigerSmooth = tigerTarget;
+      } else {
+        heroSmooth += (heroTarget - heroSmooth) * SMOOTHING;
+        tigerSmooth += (tigerTarget - tigerSmooth) * SMOOTHING;
+        /* snap once close enough so the loop can settle instead of chasing forever */
+        if (Math.abs(heroTarget - heroSmooth) < 0.0004) heroSmooth = heroTarget;
+        if (Math.abs(tigerTarget - tigerSmooth) < 0.0004) tigerSmooth = tigerTarget;
+      }
+    }
+    initialized = true;
+
+    render(heroSmooth, tigerSmooth);
+
+    var settled = heroSmooth === heroTarget && tigerSmooth === tigerTarget;
+    if (settled) {
+      rafId = null;
+    } else {
+      rafId = window.requestAnimationFrame(tick);
     }
   }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
-  update();
+  function requestTick() {
+    if (rafId === null) {
+      rafId = window.requestAnimationFrame(tick);
+    }
+  }
+
+  window.addEventListener('scroll', requestTick, { passive: true });
+  window.addEventListener('resize', requestTick, { passive: true });
+  requestTick();
 })();

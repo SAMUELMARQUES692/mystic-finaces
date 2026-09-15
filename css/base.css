@@ -94,6 +94,7 @@ p { margin: 0; }
   font-weight: 600;
   font-size: 14.5px;
   letter-spacing: var(--track-tight);
+  white-space: nowrap;
 }
 .btn__icon {
   display: flex; align-items: center; justify-content: center;
