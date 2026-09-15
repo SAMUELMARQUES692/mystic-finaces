@@ -33,6 +33,12 @@
     label.innerHTML = isLoading ? '<span class="spinner"></span>' : text;
   }
 
+  function escapeHtml(str) {
+    return String(str == null ? "" : str).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
   function showAlert(el, message) {
     el.textContent = message;
     el.classList.add("is-visible");
@@ -72,7 +78,7 @@
     transfer: { title: "Transferir", sub: "Envie valores para outra conta.", kicker: "移動 · Transferência", load: null },
     statement: { title: "Extrato", sub: "Histórico de transações da sua conta.", kicker: "記録 · Extrato", load: loadStatement },
     profile: { title: "Perfil", sub: "Seus dados de cadastro.", kicker: "身元 · Perfil", load: loadProfile },
-    admin: { title: "Usuários", sub: "Gerencie usuários da plataforma.", kicker: "管理 · Administração", load: null, adminOnly: true },
+    admin: { title: "Usuários", sub: "Gerencie usuários da plataforma.", kicker: "管理 · Administração", load: loadUsers, adminOnly: true },
   };
   var loaded = {};
 
@@ -258,6 +264,71 @@
   }
 
   // ---------- admin ----------
+  function loadUsers() {
+    var loadingEl = document.getElementById("adminUsersLoading");
+    var tableWrap = document.getElementById("adminUsersTableWrap");
+    var body = document.getElementById("adminUsersBody");
+    var emptyEl = document.getElementById("adminUsersEmpty");
+    var errorEl = document.getElementById("adminUsersError");
+
+    loadingEl.hidden = false;
+    tableWrap.hidden = true;
+    emptyEl.hidden = true;
+    hideAlert(errorEl);
+
+    // wrapped in Promise.resolve() so a synchronous throw (e.g. a stale cached
+    // api.js without this method) still lands in .catch() instead of leaving
+    // the skeleton stuck forever
+    Promise.resolve()
+      .then(function () { return api.getAllUsers(); })
+      .then(function (users) {
+        loadingEl.hidden = true;
+        if (!users || users.length === 0) {
+          emptyEl.hidden = false;
+          return;
+        }
+        tableWrap.hidden = false;
+        body.innerHTML = users
+          .map(function (user) {
+            return (
+              "<tr>" +
+              '<td class="mono">#' + escapeHtml(user.id) + "</td>" +
+              "<td>" + escapeHtml(user.name) + "</td>" +
+              "<td>" + escapeHtml(user.email) + "</td>" +
+              "<td>" + escapeHtml((user.scopes || []).join(", ")) + "</td>" +
+              '<td class="mono">' + escapeHtml(user.createdAt || "—") + "</td>" +
+              '<td><button type="button" class="btn btn--ghost-light btn--sm" data-user-id="' + escapeHtml(user.id) + '">Editar</button></td>' +
+              "</tr>"
+            );
+          })
+          .join("");
+      })
+      .catch(function (err) {
+        loadingEl.hidden = true;
+        errorEl.hidden = false;
+        showAlert(errorEl, err.message);
+      });
+  }
+
+  var adminUsersRefreshBtn = document.getElementById("adminUsersRefreshBtn");
+  if (adminUsersRefreshBtn) {
+    adminUsersRefreshBtn.addEventListener("click", function () {
+      loadUsers();
+    });
+  }
+
+  var adminUsersBody = document.getElementById("adminUsersBody");
+  if (adminUsersBody) {
+    adminUsersBody.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-user-id]");
+      if (!btn) return;
+      var id = btn.getAttribute("data-user-id");
+      document.getElementById("auId").value = id;
+      document.getElementById("adId").value = id;
+      document.getElementById("auId").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
   var adminUpdateForm = document.getElementById("adminUpdateForm");
   if (adminUpdateForm) {
     adminUpdateForm.addEventListener("submit", function (e) {
@@ -281,6 +352,7 @@
       api.updateUser(Number(id), { name: name, email: email, password: password, scopes: scopes })
         .then(function () {
           showAlert(successEl, "Usuário atualizado com sucesso.");
+          loadUsers();
         })
         .catch(function (err) {
           showAlert(alertEl, err.message);
@@ -309,6 +381,7 @@
         .then(function () {
           showAlert(successEl, "Usuário removido.");
           adminDeleteForm.reset();
+          loadUsers();
         })
         .catch(function (err) {
           showAlert(alertEl, err.message);

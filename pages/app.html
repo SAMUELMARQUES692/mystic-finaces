@@ -252,8 +252,44 @@
       <div class="card panel">
         <div class="panel__head">
           <div>
+            <p class="panel__title">Todos os usuários</p>
+            <p class="panel__desc">Usuários cadastrados na plataforma.</p>
+          </div>
+          <button type="button" class="btn btn--ghost-light btn--sm" id="adminUsersRefreshBtn">
+            <span class="btn__label" id="adminUsersRefreshLabel">Atualizar</span>
+          </button>
+        </div>
+
+        <div id="adminUsersLoading">
+          <div class="skeleton" style="height:44px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:44px;margin-bottom:8px"></div>
+          <div class="skeleton" style="height:44px"></div>
+        </div>
+
+        <div style="overflow-x:auto" id="adminUsersTableWrap" hidden>
+          <table class="tx-table">
+            <thead>
+              <tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Permissões</th><th>Criado em</th><th></th></tr>
+            </thead>
+            <tbody id="adminUsersBody"></tbody>
+          </table>
+        </div>
+
+        <div id="adminUsersEmpty" class="empty-state" hidden>
+          <div class="empty-state__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg>
+          </div>
+          <p class="empty-state__title">Nenhum usuário encontrado</p>
+        </div>
+
+        <div id="adminUsersError" class="form-alert form-alert--error" hidden></div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel__head">
+          <div>
             <p class="panel__title">Atualizar usuário</p>
-            <p class="panel__desc">A API não expõe uma listagem de usuários — informe o ID diretamente.</p>
+            <p class="panel__desc">Selecione um usuário na lista acima ou informe o ID diretamente.</p>
           </div>
         </div>
         <div class="form-alert form-alert--error" id="adminUpdateAlert"></div>

@@ -1,6 +1,6 @@
 // Tora Finance — API client
 // Talks to the FinanceSystem backend exactly as documented from its source:
-// POST /login, POST /users, GET /users/{email}/email, PUT/DELETE /users/{id},
+// POST /login, POST /users, GET /users, GET /users/{email}/email, PUT/DELETE /users/{id},
 // POST /accounts, GET /accounts/me, GET /accounts/user, POST /transactions/transfer,
 // GET /transactions/report.
 // The JWT subject carries the numeric user id (with the e-mail as a separate
@@ -171,6 +171,10 @@
 
     getUserByEmail: function (email) {
       return request("/users/" + encodeURIComponent(email) + "/email");
+    },
+
+    getAllUsers: function () {
+      return request("/users");
     },
 
     updateUser: function (id, payload) {
