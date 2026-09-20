@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Painel — Tora Finance</title>
+<title>Painel — Mystic Finance</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐯</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐉</text></svg>">
 <link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/base.css">
 <link rel="stylesheet" href="../css/auth.css">
@@ -19,7 +19,7 @@
   <div class="app-scrim" id="appScrim"></div>
 
   <aside class="app-sidebar">
-    <div class="app-sidebar__brand"><span class="topbar__mark-glyph">虎</span> Tora Finance</div>
+    <div class="app-sidebar__brand"><span class="topbar__mark-glyph">龍</span> Mystic Finance</div>
 
     <nav class="app-nav">
       <a class="app-nav__item" data-route="overview" href="#/overview">
@@ -96,6 +96,10 @@
             <p class="stat-card__label">Número da conta</p>
             <p class="stat-card__value mono" id="ovNumber">—</p>
           </div>
+          <div class="card stat-card" style="grid-column:1 / -1">
+            <p class="stat-card__label">Chave Pix</p>
+            <p class="stat-card__value mono" id="ovPix">—</p>
+          </div>
         </div>
 
         <div class="card panel">
@@ -117,7 +121,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>
         </div>
         <p class="empty-state__title">Você ainda não tem uma conta bancária</p>
-        <p class="empty-state__desc">Informe agência, número e um saldo inicial para abrir sua conta no Tora Finance.</p>
+        <p class="empty-state__desc">Informe agência, número e um saldo inicial para abrir sua conta no Mystic Finance.</p>
         <form id="createAccountForm" style="text-align:left;max-width:360px;margin:0 auto">
           <div class="field">
             <label for="accBalance">Saldo inicial</label>
@@ -149,19 +153,26 @@
         <div class="panel__head">
           <div>
             <p class="panel__title">Nova transferência</p>
-            <p class="panel__desc">Informe o ID da conta de destino e o valor a transferir.</p>
+            <p class="panel__desc">Escolha a forma de transferência e informe a chave de destino.</p>
           </div>
         </div>
 
         <div class="form-alert form-alert--error" id="transferAlert"></div>
         <div class="form-alert form-alert--success" id="transferSuccess"></div>
 
-        <form id="transferForm">
+        <form id="transferForm" novalidate>
+          <div class="field" id="fieldMethod">
+            <label for="transferMethod">Forma de transferência</label>
+            <select id="transferMethod" required>
+              <option value="pix">Pix (chave)</option>
+            </select>
+          </div>
           <div class="field-row">
             <div class="field" id="fieldDestination">
-              <label for="destinationId">ID da conta de destino</label>
-              <input type="number" id="destinationId" min="1" step="1" placeholder="Ex: 4" required>
-              <p class="field__error">Informe o ID da conta de destino.</p>
+              <label for="destinationPix">Chave Pix de destino</label>
+              <input type="text" id="destinationPix" placeholder="E-mail, telefone ou chave aleatória" required>
+              <p class="field__error">Informe a chave Pix da conta de destino.</p>
+              <p class="field__hint" id="destinationPreview"></p>
             </div>
             <div class="field" id="fieldAmount">
               <label for="amount">Valor (R$)</label>

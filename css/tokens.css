@@ -1,5 +1,5 @@
 /* ============================================================
-   TORA FINANCE — design tokens
+   MYSTIC FINANCE — design tokens
    Palette inspired by the project's own sumi-e / ukiyo-e tiger
    artwork (deep ink indigo, aged paper, brushed gold, seal red).
    Typographic pairing, motion curves, radius & elevation scale
@@ -37,8 +37,20 @@
   --seal: #a3392a;
   --seal-bright: #c94a37;
   --jade: #4c7c6e;
+  --jade-bright: #6fbba3;
+  --jade-deep: #2f5c50;
+
+  /* white tiger — cool pearl/silver, set apart from the warm gold-on-cream
+     palette above; used where copy or imagery is specifically about the
+     white tiger half of the dragon/tiger pairing rather than the brand's
+     general gold accent */
+  --pearl: #e6ecee;
+  --pearl-soft: rgba(230, 236, 238, 0.72);
+  --pearl-faint: rgba(230, 236, 238, 0.4);
+  --pearl-deep: #a9b8ba;
 
   --grad-gold: linear-gradient(135deg, var(--gold-bright), var(--gold-deep));
+  --grad-jade: linear-gradient(135deg, var(--jade-bright), var(--jade-deep));
   --grad-ink: radial-gradient(120% 140% at 20% 0%, #262838 0%, #14141c 55%, #0d0d12 100%);
 
   --line-on-dark: rgba(243, 234, 217, 0.14);

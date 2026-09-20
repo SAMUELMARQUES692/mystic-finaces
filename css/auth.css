@@ -1,5 +1,5 @@
 /* ============================================================
-   TORA FINANCE — auth screens (login / register)
+   MYSTIC FINANCE — auth screens (login / register)
    ============================================================ */
 
 .auth-shell {
@@ -50,6 +50,7 @@
   line-height: 1.35;
   letter-spacing: var(--track-tight);
   margin-bottom: 14px;
+  color: var(--pearl);
 }
 .auth-art__quote span {
   font-size: 12.5px;

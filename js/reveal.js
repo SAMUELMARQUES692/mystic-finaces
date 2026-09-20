@@ -6,6 +6,25 @@
     }, { passive: true });
   }
 
+  var menuBtn = document.getElementById('topbarMenuBtn');
+  var mobileMenu = document.getElementById('topbarMobileMenu');
+  if (menuBtn && mobileMenu) {
+    function closeMenu() {
+      mobileMenu.classList.remove('is-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+    menuBtn.addEventListener('click', function () {
+      var open = mobileMenu.classList.toggle('is-open');
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    mobileMenu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', closeMenu);
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 900) closeMenu();
+    });
+  }
+
   var targets = document.querySelectorAll('.reveal:not(.is-visible)');
   if (!('IntersectionObserver' in window) || targets.length === 0) {
     targets.forEach(function (el) { el.classList.add('is-visible'); });

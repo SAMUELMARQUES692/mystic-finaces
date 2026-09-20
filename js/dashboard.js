@@ -1,5 +1,5 @@
 (function () {
-  var api = window.ToraApi;
+  var api = window.MysticApi;
 
   if (!api.session.isAuthenticated()) {
     window.location.replace("login.html");
@@ -122,6 +122,7 @@
         document.getElementById("ovBalance").textContent = formatCurrency(account.balance);
         document.getElementById("ovAgency").textContent = account.agency;
         document.getElementById("ovNumber").textContent = account.number;
+        document.getElementById("ovPix").textContent = account.pix || "—";
       })
       .catch(function (err) {
         loadingEl.hidden = true;
@@ -163,6 +164,42 @@
 
   // ---------- transfer ----------
   var transferForm = document.getElementById("transferForm");
+  var destinationPixInput = document.getElementById("destinationPix");
+  var destinationPreview = document.getElementById("destinationPreview");
+  var pixLookupTimer = null;
+  var pixLookupSeq = 0;
+
+  function clearPixPreview() {
+    clearTimeout(pixLookupTimer);
+    destinationPreview.textContent = "";
+    destinationPreview.style.color = "";
+  }
+
+  destinationPixInput.addEventListener("input", function () {
+    var pix = destinationPixInput.value.trim();
+    clearTimeout(pixLookupTimer);
+    if (!pix) {
+      clearPixPreview();
+      return;
+    }
+    destinationPreview.style.color = "";
+    destinationPreview.textContent = "Buscando conta...";
+    var seq = ++pixLookupSeq;
+    pixLookupTimer = setTimeout(function () {
+      api.findAccountByPix(pix)
+        .then(function (account) {
+          if (seq !== pixLookupSeq) return;
+          destinationPreview.textContent = "Conta encontrada: agência " + account.agency + " · nº " + account.number;
+          destinationPreview.style.color = "var(--jade)";
+        })
+        .catch(function () {
+          if (seq !== pixLookupSeq) return;
+          destinationPreview.textContent = "Nenhuma conta encontrada para essa chave Pix.";
+          destinationPreview.style.color = "var(--seal-bright)";
+        });
+    }, 500);
+  });
+
   transferForm.addEventListener("submit", function (e) {
     e.preventDefault();
     var alertEl = document.getElementById("transferAlert");
@@ -170,26 +207,30 @@
     hideAlert(alertEl);
     hideAlert(successEl);
 
-    var destinationId = document.getElementById("destinationId").value;
+    var destinationPix = destinationPixInput.value.trim();
     var amount = document.getElementById("amount").value;
     var description = document.getElementById("description").value.trim();
 
     var destField = document.getElementById("fieldDestination");
     var amountField = document.getElementById("fieldAmount");
-    var destValid = Number(destinationId) > 0;
+    var destValid = destinationPix.length > 0;
     var amountValid = Number(amount) >= 0.01;
     destField.classList.toggle("has-error", !destValid);
     amountField.classList.toggle("has-error", !amountValid);
-    if (!destValid || !amountValid) return;
+    if (!destValid || !amountValid) {
+      showAlert(alertEl, "Preencha os campos destacados antes de transferir.");
+      return;
+    }
 
     var btn = document.getElementById("transferBtn");
     var label = document.getElementById("transferLabel");
     setLoading(btn, label, true, "Transferir");
 
-    api.transfer(Number(destinationId), Number(amount), description)
+    api.transfer(destinationPix, Number(amount), description)
       .then(function () {
         showAlert(successEl, "Transferência realizada com sucesso!");
         transferForm.reset();
+        clearPixPreview();
         loaded.statement = false;
         loaded.overview = false;
       })

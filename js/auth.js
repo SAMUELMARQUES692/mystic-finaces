@@ -1,5 +1,5 @@
 (function () {
-  if (window.ToraApi.session.isAuthenticated()) {
+  if (window.MysticApi.session.isAuthenticated()) {
     // already logged in — skip straight to the app
     window.location.replace("app.html");
     return;
@@ -40,7 +40,7 @@
       if (!emailValid || !passwordValid) return;
 
       setLoading(submitBtn, submitLabel, true, "Entrar");
-      window.ToraApi.login(email.value.trim(), password.value)
+      window.MysticApi.login(email.value.trim(), password.value)
         .then(function () {
           window.location.href = "app.html";
         })
@@ -82,10 +82,10 @@
       if (!nameValid || !emailValid || !passwordValid || !confirmValid) return;
 
       setLoading(rSubmitBtn, rSubmitLabel, true, "Criar conta");
-      window.ToraApi.register(name.value.trim(), email.value.trim(), password.value)
+      window.MysticApi.register(name.value.trim(), email.value.trim(), password.value)
         .then(function () {
           showAlert(successEl, "Conta criada com sucesso! Entrando...");
-          return window.ToraApi.login(email.value.trim(), password.value);
+          return window.MysticApi.login(email.value.trim(), password.value);
         })
         .then(function () {
           window.location.href = "app.html";

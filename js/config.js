@@ -1,6 +1,6 @@
-// Tora Finance — front-end configuration
+// Mystic Finance — front-end configuration
 // Backend: https://github.com/SAMUELMARQUES692/FinanceSystem (Spring Boot, no context-path, default port 8080)
-window.TORA_CONFIG = {
+window.MYSTIC_CONFIG = {
   // Points at the local Spring Boot backend during development. Once the
   // backend is deployed, replace PRODUCTION_API_BASE_URL below with its
   // public HTTPS URL — Vercel serves this site over HTTPS, so an http://

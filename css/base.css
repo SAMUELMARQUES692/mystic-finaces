@@ -1,5 +1,5 @@
 /* ============================================================
-   TORA FINANCE — base styles, motion, components
+   MYSTIC FINANCE — base styles, motion, components
    ============================================================ */
 
 * { box-sizing: border-box; }
@@ -63,6 +63,14 @@ button { font: inherit; }
   flex-shrink: 0;
 }
 .kicker--on-dark { color: var(--gold-bright); }
+
+/* fold-specific accents: dragon (jade) for the hero, white tiger (pearl)
+   for the tiger band — the brand's gold stays reserved for actions/marks
+   used everywhere else, so these two folds read as distinct chapters */
+.kicker--dragon { color: var(--jade-bright); }
+.kicker--dragon::before { background: radial-gradient(circle at 35% 30%, var(--jade-bright), var(--jade-deep)); }
+.kicker--tiger { color: var(--pearl); }
+.kicker--tiger::before { background: radial-gradient(circle at 35% 30%, var(--pearl), var(--pearl-deep)); }
 
 /* ---------- headings ---------- */
 h1, h2, h3, h4 {

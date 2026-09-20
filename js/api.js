@@ -1,14 +1,17 @@
-// Tora Finance — API client
+// Mystic Finance — API client
 // Talks to the FinanceSystem backend exactly as documented from its source:
 // POST /login, POST /users, GET /users, GET /users/{email}/email, PUT/DELETE /users/{id},
 // POST /accounts, GET /accounts/me, GET /accounts/user, POST /transactions/transfer,
 // GET /transactions/report.
+// Transfers are resolved by the destination account's pix key (TransactionRequest.pix),
+// not by account id — TransactionController looks the destination up via
+// accountGateway.findByPix(request.pix()) and always transacts with type TRANSFER.
 // The JWT subject carries the numeric user id (with the e-mail as a separate
 // "email" claim) — see TokenService on the backend — so GET /accounts/user
 // (added via FindAccountByUserIdUseCase) resolves the caller's account straight
 // from the token, with no extra round trip to look up an id by e-mail.
 (function () {
-  var CFG = window.TORA_CONFIG;
+  var CFG = window.MYSTIC_CONFIG;
   var TOKEN_KEY = "tora_finance_session";
 
   var ERROR_MESSAGES = {
@@ -137,7 +140,7 @@
       });
   }
 
-  window.ToraApi = {
+  window.MysticApi = {
     ApiError: ApiError,
     session: {
       get: getSession,
@@ -201,11 +204,15 @@
       });
     },
 
-    transfer: function (destinationId, amount, description) {
+    findAccountByPix: function (pix) {
+      return request("/accounts/pix/" + encodeURIComponent(pix));
+    },
+
+    transfer: function (pix, amount, description) {
       return request("/transactions/transfer", {
         method: "POST",
         body: {
-          destinationId: destinationId,
+          pix: pix,
           amount: amount,
           type: "TRANSFER",
           description: description || "",
