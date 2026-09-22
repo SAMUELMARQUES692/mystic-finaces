@@ -42,8 +42,8 @@
   }
 
   var heroDuration = 0, tigerDuration = 0;
-  watchDuration(heroVideo, function (d) { heroDuration = d; });
-  watchDuration(tigerVideo, function (d) { tigerDuration = d; });
+  watchDuration(heroVideo, function (d) { heroDuration = d; requestTick(); });
+  watchDuration(tigerVideo, function (d) { tigerDuration = d; requestTick(); });
 
   function scrubTo(video, duration, time) {
     if (!video || !duration || video.seeking) return;
