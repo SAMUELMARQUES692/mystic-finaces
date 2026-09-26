@@ -180,6 +180,8 @@
 .badge--pending { background: rgba(204,154,68,0.14); color: var(--gold-deep); }
 .badge--completed { background: rgba(76,124,110,0.14); color: var(--jade); }
 .badge--failed { background: rgba(163,57,42,0.12); color: var(--seal); }
+.badge--in { background: rgba(76,124,110,0.14); color: var(--jade); }
+.badge--out { background: rgba(163,57,42,0.12); color: var(--seal); }
 .badge--transfer { background: rgba(36,31,24,0.08); color: var(--text-on-light-soft); }
 
 .direction { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
@@ -211,3 +213,54 @@
 }
 .toast--error { border-left-color: var(--seal-bright); }
 .toast--success { border-left-color: var(--jade); }
+
+/* ---------- transfer flow (multi-step) ---------- */
+.stepper { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 26px; flex-wrap: wrap; }
+.stepper__item {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; text-transform: uppercase; letter-spacing: var(--track-wide);
+  color: var(--text-on-light-faint); font-weight: 600;
+}
+.stepper__item span {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 11px;
+  border: 1px solid var(--line-on-light-strong);
+}
+.stepper__item + .stepper__item::before { content: ""; width: 18px; height: 1px; background: var(--line-on-light-strong); }
+.stepper__item.is-active { color: var(--text-on-light); }
+.stepper__item.is-active span { background: var(--ink-900); border-color: var(--ink-900); color: var(--paper-050); }
+.stepper__item.is-done span { background: var(--jade); border-color: var(--jade); color: var(--paper-050); }
+.stepper.is-hidden { display: none; }
+@media (max-width: 520px) { .stepper__item { font-size: 0; gap: 0; } .stepper__item span { font-size: 11px; } }
+
+.tstep { display: none; }
+.tstep.is-active { display: block; animation: tf-fade-up 0.3s var(--ease-entrance) both; }
+.tstep__actions { display: flex; gap: 12px; justify-content: space-between; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+.tstep__actions .btn--primary { margin-left: auto; }
+
+.method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.method-card {
+  position: relative; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 20px; border-radius: var(--r-md);
+  background: var(--paper-050); color: var(--text-on-light);
+  border: 1px solid var(--line-on-light-strong);
+  font-family: var(--font-sans);
+  transition: transform 0.2s var(--ease-entrance), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.method-card:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--gold-deep); box-shadow: var(--shadow-md); }
+.method-card:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+.method-card:disabled { cursor: not-allowed; opacity: 0.6; }
+.method-card__icon { width: 40px; height: 40px; border-radius: 50%; background: var(--paper-200); color: var(--gold-deep); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+.method-card__icon svg { width: 20px; height: 20px; }
+.method-card__title { font-family: var(--font-display); font-size: 17px; }
+.method-card__desc { font-size: 12.5px; color: var(--text-on-light-soft); }
+.method-card__soon { position: absolute; top: 14px; right: 14px; }
+
+.review { background: var(--paper-100); border: 1px solid var(--line-on-light); border-radius: var(--r-md); padding: 22px 24px; margin-bottom: 20px; }
+.review__amount { font-family: var(--font-display); font-size: 32px; letter-spacing: var(--track-tight); margin-bottom: 16px; }
+.review__list { margin: 0; display: grid; gap: 0; }
+.review__list > div { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-top: 1px solid var(--line-on-light); font-size: 13.5px; }
+.review__list dt { color: var(--text-on-light-faint); text-transform: uppercase; letter-spacing: var(--track-wide); font-size: 11.5px; padding-top: 2px; }
+.review__list dd { margin: 0; text-align: right; word-break: break-word; }

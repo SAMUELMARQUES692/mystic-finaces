@@ -172,85 +172,142 @@
   });
 
   // ---------- transfer ----------
-  var transferForm = document.getElementById("transferForm");
+  // Guided flow: forma -> chave -> valor -> dados do destinatario + confirmar.
+  // Only Pix is wired to the backend (POST /transactions/transfer resolves the
+  // destination by pix key); the other methods are listed as "em breve".
+  var transferFlow = document.getElementById("transferFlow");
   var destinationPixInput = document.getElementById("destinationPix");
-  var destinationPreview = document.getElementById("destinationPreview");
-  var pixLookupTimer = null;
-  var pixLookupSeq = 0;
+  var amountInput = document.getElementById("amount");
+  var descriptionInput = document.getElementById("description");
+  var STEP_ORDER = ["method", "key", "amount", "review"];
+  var transferState = { method: null, pix: "", recipient: null, amount: 0, description: "" };
+  var lookupInFlight = false;
+  var transferInFlight = false;
 
-  function clearPixPreview() {
-    clearTimeout(pixLookupTimer);
-    destinationPreview.textContent = "";
-    destinationPreview.style.color = "";
+  function goToStep(step) {
+    transferFlow.querySelectorAll(".tstep").forEach(function (el) {
+      el.classList.toggle("is-active", el.getAttribute("data-step") === step);
+    });
+    var idx = STEP_ORDER.indexOf(step);
+    document.getElementById("transferStepper").classList.toggle("is-hidden", idx === -1);
+    document.querySelectorAll("#transferStepper .stepper__item").forEach(function (el, i) {
+      el.classList.toggle("is-active", i === idx);
+      el.classList.toggle("is-done", i < idx);
+    });
   }
 
-  destinationPixInput.addEventListener("input", function () {
-    var pix = destinationPixInput.value.trim();
-    clearTimeout(pixLookupTimer);
-    if (!pix) {
-      clearPixPreview();
-      return;
-    }
-    destinationPreview.style.color = "";
-    destinationPreview.textContent = "Buscando conta...";
-    var seq = ++pixLookupSeq;
-    pixLookupTimer = setTimeout(function () {
-      api.findAccountByPix(pix)
-        .then(function (account) {
-          if (seq !== pixLookupSeq) return;
-          var holder = [account.userName, maskCpf(account.userCpf)].filter(Boolean).join(" · ");
-          destinationPreview.textContent = "Conta encontrada: " + (holder ? holder + " — " : "") + "agência " + account.agency + " · nº " + account.number;
-          destinationPreview.style.color = "var(--jade)";
-        })
-        .catch(function () {
-          if (seq !== pixLookupSeq) return;
-          destinationPreview.textContent = "Nenhuma conta encontrada para essa chave Pix.";
-          destinationPreview.style.color = "var(--seal-bright)";
-        });
-    }, 500);
+  function resetTransfer() {
+    transferState = { method: null, pix: "", recipient: null, amount: 0, description: "" };
+    destinationPixInput.value = "";
+    amountInput.value = "";
+    descriptionInput.value = "";
+    document.getElementById("fieldKey").classList.remove("has-error");
+    document.getElementById("fieldAmount").classList.remove("has-error");
+    hideAlert(document.getElementById("keyAlert"));
+    hideAlert(document.getElementById("transferAlert"));
+    goToStep("method");
+  }
+
+  document.querySelectorAll(".method-card:not(:disabled)").forEach(function (card) {
+    card.addEventListener("click", function () {
+      transferState.method = card.getAttribute("data-method");
+      goToStep("key");
+      destinationPixInput.focus();
+    });
   });
 
-  transferForm.addEventListener("submit", function (e) {
+  transferFlow.querySelectorAll("[data-back]").forEach(function (btn) {
+    btn.addEventListener("click", function () { goToStep(btn.getAttribute("data-back")); });
+  });
+
+  // step 2: look the account up by pix key
+  document.getElementById("keyForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    var alertEl = document.getElementById("transferAlert");
-    var successEl = document.getElementById("transferSuccess");
+    if (lookupInFlight) return;
+    var alertEl = document.getElementById("keyAlert");
     hideAlert(alertEl);
-    hideAlert(successEl);
 
-    var destinationPix = destinationPixInput.value.trim();
-    var amount = document.getElementById("amount").value;
-    var description = document.getElementById("description").value.trim();
+    var pix = destinationPixInput.value.trim();
+    document.getElementById("fieldKey").classList.toggle("has-error", !pix);
+    if (!pix) return;
 
-    var destField = document.getElementById("fieldDestination");
-    var amountField = document.getElementById("fieldAmount");
-    var destValid = destinationPix.length > 0;
-    var amountValid = Number(amount) >= 0.01;
-    destField.classList.toggle("has-error", !destValid);
-    amountField.classList.toggle("has-error", !amountValid);
-    if (!destValid || !amountValid) {
-      showAlert(alertEl, "Preencha os campos destacados antes de transferir.");
-      return;
-    }
+    var btn = document.getElementById("keyBtn");
+    var label = document.getElementById("keyLabel");
+    lookupInFlight = true;
+    setLoading(btn, label, true, "Buscar conta");
+    api.findAccountByPix(pix)
+      .then(function (account) {
+        transferState.pix = pix;
+        transferState.recipient = account;
+        goToStep("amount");
+        amountInput.focus();
+      })
+      .catch(function (err) {
+        // the backend answers 500 for an unknown key, so any other failure reads as "not found"
+        showAlert(alertEl, err.code === "NETWORK_ERROR" ? err.message : "Nenhuma conta encontrada para essa chave Pix.");
+      })
+      .finally(function () {
+        lookupInFlight = false;
+        setLoading(btn, label, false, "Buscar conta");
+      });
+  });
+
+  // step 3: amount -> review
+  document.getElementById("amountForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var amount = Number(amountInput.value);
+    var valid = amount >= 0.01;
+    document.getElementById("fieldAmount").classList.toggle("has-error", !valid);
+    if (!valid) return;
+
+    var r = transferState.recipient;
+    transferState.amount = amount;
+    transferState.description = descriptionInput.value.trim();
+
+    document.getElementById("rvAmount").textContent = formatCurrency(amount);
+    document.getElementById("rvName").textContent = r.userName || "—";
+    document.getElementById("rvCpf").textContent = maskCpf(r.userCpf) || "—";
+    document.getElementById("rvPix").textContent = transferState.pix;
+    document.getElementById("rvAgency").textContent = r.agency || "—";
+    document.getElementById("rvNumber").textContent = r.number || "—";
+    document.getElementById("rvDescription").textContent = transferState.description || "—";
+    hideAlert(document.getElementById("transferAlert"));
+    goToStep("review");
+  });
+
+  // step 4: confirm
+  document.getElementById("transferBtn").addEventListener("click", function () {
+    if (transferInFlight) return;
+    var alertEl = document.getElementById("transferAlert");
+    hideAlert(alertEl);
 
     var btn = document.getElementById("transferBtn");
     var label = document.getElementById("transferLabel");
-    setLoading(btn, label, true, "Transferir");
+    var backBtn = document.getElementById("reviewBack");
+    transferInFlight = true;
+    backBtn.disabled = true;
+    setLoading(btn, label, true, "Confirmar transferência");
 
-    api.transfer(destinationPix, Number(amount), description)
+    api.transfer(transferState.pix, transferState.amount, transferState.description)
       .then(function () {
-        showAlert(successEl, "Transferência realizada com sucesso!");
-        transferForm.reset();
-        clearPixPreview();
+        var r = transferState.recipient;
+        document.getElementById("doneSummary").textContent =
+          formatCurrency(transferState.amount) + " enviados para " + (r.userName || "a conta de destino") + ".";
         loaded.statement = false;
         loaded.overview = false;
+        goToStep("done");
       })
       .catch(function (err) {
         showAlert(alertEl, err.message);
       })
       .finally(function () {
-        setLoading(btn, label, false, "Transferir");
+        transferInFlight = false;
+        backBtn.disabled = false;
+        setLoading(btn, label, false, "Confirmar transferência");
       });
   });
+
+  document.getElementById("newTransferBtn").addEventListener("click", resetTransfer);
 
   // ---------- statement ----------
   function loadStatement() {
@@ -286,11 +343,13 @@
           .map(function (tx) {
             var statusClass = { PENDING: "pending", COMPLETED: "completed", FAILED: "failed" }[tx.status] || "transfer";
             var originId = tx.origin ? tx.origin.id : tx.originId;
-            var direction = myAccountId == null ? tx.type : originId === myAccountId ? "Enviada" : "Recebida";
+            var sent = originId === myAccountId;
+            var direction = myAccountId == null ? tx.type : sent ? "Enviada" : "Recebida";
+            var directionClass = myAccountId == null ? "transfer" : sent ? "out" : "in";
             return (
               "<tr>" +
               '<td class="mono">' + escapeHtml(tx.createdAt || "—") + "</td>" +
-              '<td><span class="badge badge--transfer">' + escapeHtml(direction) + "</span></td>" +
+              '<td><span class="badge badge--' + directionClass + '">' + escapeHtml(direction) + "</span></td>" +
               "<td>" + party(tx.origin, tx.originId) + " → " + party(tx.destination, tx.destinationId) + "</td>" +
               '<td class="mono">' + formatCurrency(tx.amount) + "</td>" +
               '<td><span class="badge badge--' + statusClass + '">' + escapeHtml(tx.status) + "</span></td>" +

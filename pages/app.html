@@ -154,46 +154,139 @@
 
     <!-- TRANSFER -->
     <section class="view" id="view-transfer">
-      <div class="card panel">
-        <div class="panel__head">
-          <div>
-            <p class="panel__title">Nova transferência</p>
-            <p class="panel__desc">Escolha a forma de transferência e informe a chave de destino.</p>
+      <div class="card panel" id="transferFlow">
+        <ol class="stepper" id="transferStepper" aria-label="Etapas da transferência">
+          <li class="stepper__item is-active" data-step-ind="method"><span>1</span> Forma</li>
+          <li class="stepper__item" data-step-ind="key"><span>2</span> Destino</li>
+          <li class="stepper__item" data-step-ind="amount"><span>3</span> Valor</li>
+          <li class="stepper__item" data-step-ind="review"><span>4</span> Confirmar</li>
+        </ol>
+
+        <!-- 1 · forma de transferência -->
+        <div class="tstep is-active" data-step="method">
+          <div class="panel__head">
+            <div>
+              <p class="panel__title">Como você quer transferir?</p>
+              <p class="panel__desc">Escolha a forma de transferência.</p>
+            </div>
+          </div>
+          <div class="method-grid">
+            <button type="button" class="method-card" data-method="pix">
+              <span class="method-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l4 4-4 4-4-4zM12 13l4 4-4 4-4-4zM3 12l4-4 2 2-2 2 2 2-2 2zM21 12l-4-4-2 2 2 2-2 2z"/></svg></span>
+              <span class="method-card__title">Pix</span>
+              <span class="method-card__desc">Por chave Pix, na hora.</span>
+            </button>
+            <button type="button" class="method-card" data-method="boleto" disabled>
+              <span class="method-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 5v14M8 5v14M12 5v14M16 5v14M20 5v14"/></svg></span>
+              <span class="method-card__title">Pagar boleto</span>
+              <span class="method-card__desc">Código de barras ou linha digitável.</span>
+              <span class="badge badge--transfer method-card__soon">Em breve</span>
+            </button>
+            <button type="button" class="method-card" data-method="ted" disabled>
+              <span class="method-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M3 10l9-6 9 6zM5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg></span>
+              <span class="method-card__title">TED</span>
+              <span class="method-card__desc">Para outros bancos, por agência e conta.</span>
+              <span class="badge badge--transfer method-card__soon">Em breve</span>
+            </button>
           </div>
         </div>
 
-        <div class="form-alert form-alert--error" id="transferAlert"></div>
-        <div class="form-alert form-alert--success" id="transferSuccess"></div>
-
-        <form id="transferForm" novalidate>
-          <div class="field" id="fieldMethod">
-            <label for="transferMethod">Forma de transferência</label>
-            <select id="transferMethod" required>
-              <option value="pix">Pix (chave)</option>
-            </select>
-          </div>
-          <div class="field-row">
-            <div class="field" id="fieldDestination">
-              <label for="destinationPix">Chave Pix de destino</label>
-              <input type="text" id="destinationPix" placeholder="E-mail, telefone ou chave aleatória" required>
-              <p class="field__error">Informe a chave Pix da conta de destino.</p>
-              <p class="field__hint" id="destinationPreview"></p>
+        <!-- 2 · chave de destino -->
+        <div class="tstep" data-step="key">
+          <div class="panel__head">
+            <div>
+              <p class="panel__title">Para quem você vai enviar?</p>
+              <p class="panel__desc">Informe a chave Pix da conta de destino.</p>
             </div>
+          </div>
+          <div class="form-alert form-alert--error" id="keyAlert"></div>
+          <form id="keyForm" novalidate>
+            <div class="field" id="fieldKey">
+              <label for="destinationPix">Chave Pix</label>
+              <input type="text" id="destinationPix" placeholder="E-mail, telefone ou chave aleatória" autocomplete="off" required>
+              <p class="field__error">Informe a chave Pix da conta de destino.</p>
+            </div>
+            <div class="tstep__actions">
+              <button type="button" class="btn btn--ghost-light" data-back="method"><span class="btn__label">Voltar</span></button>
+              <button type="submit" class="btn btn--primary" id="keyBtn">
+                <span class="btn__label" id="keyLabel">Buscar conta</span>
+                <span class="btn__icon">→</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 3 · valor -->
+        <div class="tstep" data-step="amount">
+          <div class="panel__head">
+            <div>
+              <p class="panel__title">Quanto você quer enviar?</p>
+              <p class="panel__desc">Conta encontrada. Informe o valor da transferência.</p>
+            </div>
+          </div>
+          <form id="amountForm" novalidate>
             <div class="field" id="fieldAmount">
               <label for="amount">Valor (R$)</label>
-              <input type="number" id="amount" min="0.01" step="0.01" placeholder="0,00" required>
+              <input type="number" id="amount" min="0.01" step="0.01" placeholder="0,00" inputmode="decimal" required>
               <p class="field__error">Informe um valor válido (mínimo R$ 0,01).</p>
             </div>
+            <div class="field">
+              <label for="description">Descrição (opcional)</label>
+              <input type="text" id="description" maxlength="140" placeholder="Ex: Pagamento combinado">
+            </div>
+            <div class="tstep__actions">
+              <button type="button" class="btn btn--ghost-light" data-back="key"><span class="btn__label">Voltar</span></button>
+              <button type="submit" class="btn btn--primary">
+                <span class="btn__label">Continuar</span>
+                <span class="btn__icon">→</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 4 · dados do destinatário + confirmar -->
+        <div class="tstep" data-step="review">
+          <div class="panel__head">
+            <div>
+              <p class="panel__title">Confirme a transferência</p>
+              <p class="panel__desc">Confira os dados do destinatário antes de enviar.</p>
+            </div>
           </div>
-          <div class="field">
-            <label for="description">Descrição (opcional)</label>
-            <input type="text" id="description" maxlength="140" placeholder="Ex: Pagamento combinado">
+          <div class="form-alert form-alert--error" id="transferAlert"></div>
+          <div class="review">
+            <p class="review__amount" id="rvAmount">—</p>
+            <dl class="review__list">
+              <div><dt>Destinatário</dt><dd id="rvName">—</dd></div>
+              <div><dt>CPF</dt><dd class="mono" id="rvCpf">—</dd></div>
+              <div><dt>Chave Pix</dt><dd class="mono" id="rvPix">—</dd></div>
+              <div><dt>Agência</dt><dd class="mono" id="rvAgency">—</dd></div>
+              <div><dt>Conta</dt><dd class="mono" id="rvNumber">—</dd></div>
+              <div><dt>Descrição</dt><dd id="rvDescription">—</dd></div>
+            </dl>
           </div>
-          <button type="submit" class="btn btn--primary auth-submit" id="transferBtn">
-            <span class="btn__label" id="transferLabel">Transferir</span>
-            <span class="btn__icon">→</span>
-          </button>
-        </form>
+          <div class="tstep__actions">
+            <button type="button" class="btn btn--ghost-light" data-back="amount" id="reviewBack"><span class="btn__label">Voltar</span></button>
+            <button type="button" class="btn btn--primary" id="transferBtn">
+              <span class="btn__label" id="transferLabel">Confirmar transferência</span>
+              <span class="btn__icon">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- sucesso -->
+        <div class="tstep" data-step="done">
+          <div class="empty-state">
+            <div class="empty-state__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+            </div>
+            <p class="empty-state__title">Transferência realizada!</p>
+            <p class="empty-state__desc" id="doneSummary"></p>
+            <button type="button" class="btn btn--primary" id="newTransferBtn">
+              <span class="btn__label">Nova transferência</span>
+              <span class="btn__icon">→</span>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
