@@ -39,6 +39,13 @@
     });
   }
 
+  // CPF comes unmasked from the API; only show the middle digits (LGPD-friendly).
+  function maskCpf(cpf) {
+    var d = String(cpf == null ? "" : cpf).replace(/\D/g, "");
+    if (d.length !== 11) return "";
+    return "***." + d.slice(3, 6) + "." + d.slice(6, 9) + "-**";
+  }
+
   function showAlert(el, message) {
     el.textContent = message;
     el.classList.add("is-visible");
@@ -120,6 +127,8 @@
         loadingEl.hidden = true;
         contentEl.hidden = false;
         document.getElementById("ovBalance").textContent = formatCurrency(account.balance);
+        document.getElementById("ovHolder").textContent = account.userName || "—";
+        document.getElementById("ovCpf").textContent = maskCpf(account.userCpf) || "—";
         document.getElementById("ovAgency").textContent = account.agency;
         document.getElementById("ovNumber").textContent = account.number;
         document.getElementById("ovPix").textContent = account.pix || "—";
@@ -189,7 +198,8 @@
       api.findAccountByPix(pix)
         .then(function (account) {
           if (seq !== pixLookupSeq) return;
-          destinationPreview.textContent = "Conta encontrada: agência " + account.agency + " · nº " + account.number;
+          var holder = [account.userName, maskCpf(account.userCpf)].filter(Boolean).join(" · ");
+          destinationPreview.textContent = "Conta encontrada: " + (holder ? holder + " — " : "") + "agência " + account.agency + " · nº " + account.number;
           destinationPreview.style.color = "var(--jade)";
         })
         .catch(function () {
@@ -250,26 +260,41 @@
     var emptyEl = document.getElementById("statementEmpty");
     var errorEl = document.getElementById("statementError");
 
-    api.getReport()
-      .then(function (transactions) {
+    // the report is already scoped to the caller's account; the account id tells sent from received
+    Promise.all([
+      api.getReport(),
+      api.getAccountByToken().catch(function () { return null; }),
+    ])
+      .then(function (results) {
+        var transactions = results[0];
+        var myAccountId = results[1] ? results[1].id : null;
         loadingEl.hidden = true;
         if (!transactions || transactions.length === 0) {
           emptyEl.hidden = false;
           return;
         }
         tableWrap.hidden = false;
-        var myAccountId = null; // best-effort; report is already scoped to the caller's account
+
+        // origin/destination arrive as account objects (older payloads had originId/destinationId)
+        function party(acc, fallbackId) {
+          var id = acc && acc.id != null ? acc.id : fallbackId;
+          var name = acc && acc.user && acc.user.name;
+          return (name ? escapeHtml(name) + " " : "") + '<span class="mono">#' + escapeHtml(id) + "</span>";
+        }
+
         body.innerHTML = transactions
           .map(function (tx) {
             var statusClass = { PENDING: "pending", COMPLETED: "completed", FAILED: "failed" }[tx.status] || "transfer";
+            var originId = tx.origin ? tx.origin.id : tx.originId;
+            var direction = myAccountId == null ? tx.type : originId === myAccountId ? "Enviada" : "Recebida";
             return (
               "<tr>" +
-              '<td class="mono">' + (tx.createdAt || "—") + "</td>" +
-              '<td><span class="badge badge--transfer">' + tx.type + "</span></td>" +
-              '<td class="mono">#' + tx.originId + " → #" + tx.destinationId + "</td>" +
+              '<td class="mono">' + escapeHtml(tx.createdAt || "—") + "</td>" +
+              '<td><span class="badge badge--transfer">' + escapeHtml(direction) + "</span></td>" +
+              "<td>" + party(tx.origin, tx.originId) + " → " + party(tx.destination, tx.destinationId) + "</td>" +
               '<td class="mono">' + formatCurrency(tx.amount) + "</td>" +
-              '<td><span class="badge badge--' + statusClass + '">' + tx.status + "</span></td>" +
-              "<td>" + (tx.description || "—") + "</td>" +
+              '<td><span class="badge badge--' + statusClass + '">' + escapeHtml(tx.status) + "</span></td>" +
+              "<td>" + escapeHtml(tx.description || "—") + "</td>" +
               "</tr>"
             );
           })
